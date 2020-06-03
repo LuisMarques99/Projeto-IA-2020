@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class LoggerRobot extends AdvancedRobot {
 
-    private class Dados{
+    private static class Dados {
         String nome;
         Double distancia;
 
@@ -25,8 +25,7 @@ public class LoggerRobot extends AdvancedRobot {
     HashMap<Bullet, Dados> balasNoAr = new HashMap<>();
 
     @Override
-    public void run()
-    {
+    public void run() {
         super.run();
 
         try {
@@ -35,7 +34,7 @@ public class LoggerRobot extends AdvancedRobot {
             e.printStackTrace();
         }
 
-        while(true){
+        while (true) {
             setAhead(100);
             setTurnLeft(100);
             Random rand = new Random();
@@ -50,16 +49,15 @@ public class LoggerRobot extends AdvancedRobot {
         super.onScannedRobot(event);
 
         try {
-            fw.write("Enemy "+event.getName()+" spotted at "+utils.Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance())+"\n");
+            fw.write("Enemy " + event.getName() + " spotted at " + utils.Utils.getEnemyCoordinates(this,
+                    event.getBearing(), event.getDistance()) + "\n");
             Bullet b = fireBullet(3);
 
-            if (b!=null){
+            if (b != null) {
                 fw.write("Fire at will!!!\n");
                 balasNoAr.put(b, new Dados(event.getName(), event.getDistance()));
-            }
-            else
+            } else
                 fw.write("Out of ammo...\n");
-
 
 
         } catch (IOException e) {
@@ -71,13 +69,12 @@ public class LoggerRobot extends AdvancedRobot {
     public void onBulletHit(BulletHitEvent event) {
         super.onBulletHit(event);
         Dados d = balasNoAr.get(event.getBullet());
-        try
-        {
+        try {
             //testar se acertei em quem era suposto
             if (event.getName().equals(event.getBullet().getVictim()))
-                fw.write(d.nome+","+d.distancia+",acertei\n");
+                fw.write(d.nome + "," + d.distancia + ",acertei\n");
             else
-                fw.write(d.nome+","+d.distancia+",falhei\n");
+                fw.write(d.nome + "," + d.distancia + ",falhei\n");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,7 +87,7 @@ public class LoggerRobot extends AdvancedRobot {
         super.onBulletMissed(event);
         Dados d = balasNoAr.get(event.getBullet());
         try {
-            fw.write(d.nome+","+d.distancia+",falhei\n");
+            fw.write(d.nome + "," + d.distancia + ",falhei\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -102,7 +99,7 @@ public class LoggerRobot extends AdvancedRobot {
         super.onBulletHitBullet(event);
         Dados d = balasNoAr.get(event.getBullet());
         try {
-            fw.write(d.nome+","+d.distancia+",falhei\n");
+            fw.write(d.nome + "," + d.distancia + ",falhei\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
