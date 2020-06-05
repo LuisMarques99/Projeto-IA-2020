@@ -48,6 +48,4 @@ public class PathDrawingSample {
         pv.paintPath(points);
 
     }
-
-
 }
