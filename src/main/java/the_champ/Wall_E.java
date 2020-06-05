@@ -1,10 +1,11 @@
-package TheChampProject;
+package the_champ;
 
 import impl.Point;
 import impl.UIConfiguration;
 import interf.IPoint;
 import robocode.Robot;
 import robocode.*;
+import utils.Utils;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -46,6 +47,9 @@ public class Wall_E extends AdvancedRobot {
 
     public int enemy_count = 0;
 
+    //variável que contém o ponto atual para o qual o robot se está a dirigir
+    private int currentPoint = -1;
+
     /**
      * utilizada par associar inimigos a retângulos e permitir remover retângulos de inimigos já desatualizados
      */
@@ -71,12 +75,25 @@ public class Wall_E extends AdvancedRobot {
             e.printStackTrace();
         }
 
+        //scan inicial para ver a quantidade de inimigos/obstaculos
         this.turnRadarRight(720);
         enemy_count = inimigos.size();
         System.out.println("Quantidade de inimigos encontrados: " + enemy_count);
-
         while (true) {
-            this.turnGunLeftRadians(360);
+            turnGunRightRadians(Double.POSITIVE_INFINITY);
+            //se se está a dirigir para algum ponto
+            if (currentPoint >= 0) {
+                IPoint ponto = points.get(currentPoint);
+                //se já está no ponto ou lá perto...
+                if (Utils.getDistance(this, ponto.getX(), ponto.getY()) < 2){
+                    currentPoint++;
+                    //se chegou ao fim do caminho
+                    if (currentPoint >= points.size()){
+                        currentPoint = -1;
+                    }
+                }
+                advancedRobotGoTo(this, ponto.getX(), ponto.getY());
+            }
             execute();
         }
     }
@@ -171,7 +188,7 @@ public class Wall_E extends AdvancedRobot {
         points.add(new Point(300, 350));
 
         for (int i = 0; i < points.size(); i++) {
-            robotGoTo(this, points.get(i).getX(), points.get(i).getY());
+            advancedRobotGoTo(this, points.get(i).getX(), points.get(i).getY());
         }
         //Utils.advancedRobotGoTo(this, points.get(i).getX(), points.get(i).getY());
     }
@@ -330,13 +347,13 @@ public class Wall_E extends AdvancedRobot {
     }
 
     /**
-     * Dirige o robot (RobotSimples) para determinadas coordenadas
+     * Dirige o robot (AdvancedRobot) para determinadas coordenadas
      *
      * @param robot o meu robot
-     * @param x     coordenada x do alvo
-     * @param y     coordenada y do alvo
-     */
-    public static void robotGoTo(Robot robot, double x, double y) {
+     * @param x coordenada x do alvo
+     * @param y coordenada y do alvo
+     * */
+    public static void advancedRobotGoTo(AdvancedRobot robot, double x, double y) {
         x -= robot.getX();
         y -= robot.getY();
 
@@ -344,10 +361,11 @@ public class Wall_E extends AdvancedRobot {
         double targetAngle = robocode.util.Utils.normalRelativeAngle(angleToTarget - Math.toRadians(robot.getHeading()));
         double distance = Math.hypot(x, y);
         double turnAngle = Math.atan(Math.tan(targetAngle));
-        robot.turnRight(Math.toDegrees(turnAngle));
+        robot.setTurnRight(Math.toDegrees(turnAngle));
         if (targetAngle == turnAngle)
-            robot.ahead(distance);
+            robot.setAhead(distance);
         else
-            robot.back(distance);
+            robot.setBack(distance);
+        robot.execute();
     }
 }
