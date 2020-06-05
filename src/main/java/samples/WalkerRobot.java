@@ -42,7 +42,6 @@ public class WalkerRobot extends AdvancedRobot {
 
             //this.ahead(100);
             //this.turnLeft(100);
-
             //this.execute();
         }
     }
