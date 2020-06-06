@@ -66,17 +66,10 @@ public class MARK1 extends AdvancedRobot {
         conf.setStart(new Point((int) this.getX(), (int) this.getY()));
         conf.setEnd(new Point(e.getX(), e.getY()));
 
-        /*
-         * TODO: Implementar a chamada ao algoritmo genético!
-         *
-         * */
-        System.out.println("Choo Choo!!!");
+        System.out.println("Moving to selected point!");
         points = new ArrayList<>();
-        points.add(new Point(100,100));
-        points.add(new Point(200,200));
-        points.add(new Point(250,500));
-        points.add(new Point(300,350));
-
+        // chamada ao algoritmo genético
+        GeneticAlgorithm.markGeneticAlgorithm(points , 20 , 10 , 0.5);
         currentPoint = 0;
     }
 
