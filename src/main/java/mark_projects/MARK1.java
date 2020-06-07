@@ -69,7 +69,7 @@ public class MARK1 extends AdvancedRobot {
         System.out.println("Moving to selected point!");
         points = new ArrayList<>();
         // chamada ao algoritmo genético
-        GeneticAlgorithm.markGeneticAlgorithm(points , 20 , 10 , 0.5);
+        GeneticAlgorithm.markGeneticAlgorithm(points , 5 , 10 , 0.5 , conf);
         currentPoint = 0;
     }
 
@@ -96,10 +96,7 @@ public class MARK1 extends AdvancedRobot {
         super.onScannedRobot(event);
 
         //Nao é suposto este robot disparar a ninguem logo a chamada a Bullet nao é feita aqui ainda
-        System.out.println("Enemy spotted: " + event.getName());
-
         Point2D.Double ponto = getEnemyCoordinates(this, event.getBearing(), event.getDistance());
-        System.out.println("Enemy coordinates: " + ponto + "\n");
 
         ponto.x -= this.getWidth()*2.5 / 2;
         ponto.y -= this.getHeight()*2.5 / 2;
