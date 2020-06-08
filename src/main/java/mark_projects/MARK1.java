@@ -69,7 +69,7 @@ public class MARK1 extends AdvancedRobot {
         System.out.println("Moving to selected point!");
         points = new ArrayList<>();
         // chamada ao algoritmo genético
-        GeneticAlgorithm.markGeneticAlgorithm(points , 5 , 10 , 0.5 , conf);
+        points = GeneticAlgorithm.markGeneticAlgorithm(4 , 10 , 0.5 , conf);
         currentPoint = 0;
     }
 

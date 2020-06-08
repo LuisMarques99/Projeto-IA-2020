@@ -5,7 +5,6 @@ import impl.UIConfiguration;
 import interf.IPoint;
 import robocode.AdvancedRobot;
 
-import javax.sound.sampled.Line;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -21,19 +20,18 @@ public class GeneticAlgorithm extends AdvancedRobot{
     private static boolean flag = false;
     private static int deck = 0;
 
-    public static List<IPoint> markGeneticAlgorithm(List<IPoint> points , int populationSize , int maxIterations ,
-                                                    double mutationFactor , UIConfiguration conf){
-        int i = 0 , a = 0 , deck = 0;
+    public static List<IPoint> markGeneticAlgorithm(int populationSize , int maxIterations , double mutationFactor , UIConfiguration conf){
+        int i = 0 , a = 0;
         double index, prevIndex = 0;
-        List<IPoint> finalPointList = null; //lista temporária onde vai guardado o melhor caminho a seguir
+        List<IPoint> finalPointList = null; //lista final onde vai guardado o melhor caminho a seguir
+        List<IPoint> points = new ArrayList<>(); //lista temporária onde vai ser carregado novas populacoes a cada iteracao
         List<Rectangle> obstacles = conf.getObstacles(); //lista com os obstáculos encontrados no mapa
         Random rand = new Random();
 
         do{
             int x1Value = conf.getStart().getX();
             int y1Value = conf.getStart().getY();
-            //adicionar o ponto de partida do robot como ponto de partida
-            points.add(new Point(x1Value,y1Value));
+            points.add(new Point(x1Value,y1Value)); //adicionar o ponto de partida do robot como ponto de partida
 
             do{
                 int x2Value = rand.nextInt(conf.getWidth());
@@ -41,12 +39,14 @@ public class GeneticAlgorithm extends AdvancedRobot{
 
                 Line2D line1 = new Line2D.Double(x1Value,y1Value,x2Value,y2Value);
 
+                //se o ponto onde nos encontramos for o ultimo ponto entao adiciona esse como o ponto seleccionado pelo utilizador
                 if(a == populationSize - 1){
                     line1 = new Line2D.Double(x1Value,y1Value,conf.getEnd().getX(),conf.getEnd().getY());
                     x2Value = conf.getEnd().getX();
                     y2Value = conf.getEnd().getY();
                 }
 
+                //determinar se a linha se intercepta com algum dos obstáculos
                 for(int c = 0 ; c < obstacles.size() ; c++){
                     if(line1.intersects(obstacles.get(c).getBounds2D())){
                         flag = true;
@@ -57,25 +57,25 @@ public class GeneticAlgorithm extends AdvancedRobot{
                 y1Value = y2Value;
                 a++;
             } while(a < populationSize);
-
             a = 0;
             index = getFitness(points);
 
-            //Se o index de fitness registado nesta populacao for maior do que o anterior, entao esta populacao vai ser a seleccionada
-            //Caso contrário continua com a populacao anterior, ou seja, nao faz nada!
-
+            /**
+             * Se o index de fitness registado nesta populacao for maior do que o anterior, entao esta populacao vai
+             * ser a seleccionada caso contrário continua com a populacao anterior, ou seja, nao faz nada!
+             */
             if(index > prevIndex){
                 finalPointList = points;
-                //prevIndex = index;
+                //prevIndex = index; esta variável so se descomenta depois de implementar a funcao getFitness()!
             }
             points = new ArrayList<>();
-            index = 0;
             i++;
         } while (i < maxIterations);
 
-        if(deck > 0){
-            System.out.println("Houve pelo menos uma solucao otima!");
-        }
+        if(deck > 0)
+            System.out.println("At least one possible route was found!");
+        else
+            System.out.println("The system could not find any available routes...");
 
         return finalPointList;
     }
@@ -91,6 +91,7 @@ public class GeneticAlgorithm extends AdvancedRobot{
             fitnessPoints = 100;
             deck++;
         }
+        flag = false;
         /*
         Se for feito com o modelo de populacao generational significa que metemos aqui todos os pontos de um unico caminho
         para ver qual o seu fitness, pois a seguir, como estamos a utilizar o modelo generational, toda essa populacao vai ser
