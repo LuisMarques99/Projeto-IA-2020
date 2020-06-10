@@ -43,17 +43,19 @@ public class MARK1 extends AdvancedRobot {
             this.setTurnRadarRight(360);
 
             //se se está a dirigir para algum ponto
-            if (currentPoint >= 0)
-            {
-                IPoint ponto = points.get(currentPoint);
-                //se já está no ponto ou lá perto...
-                if (Utils.getDistance(this, ponto.getX(), ponto.getY()) < 2){
-                    currentPoint++;
-                    //se chegou ao fim do caminho
-                    if (currentPoint >= points.size())
-                        currentPoint = -1;
+            if (points != null){
+                if (currentPoint >= 0)
+                {
+                    IPoint ponto = points.get(currentPoint);
+                    //se já está no ponto ou lá perto...
+                    if (Utils.getDistance(this, ponto.getX(), ponto.getY()) < 2){
+                        currentPoint++;
+                        //se chegou ao fim do caminho
+                        if (currentPoint >= points.size())
+                            currentPoint = -1;
+                    }
+                    advancedRobotGoTo(this, ponto.getX(), ponto.getY());
                 }
-                advancedRobotGoTo(this, ponto.getX(), ponto.getY());
             }
             this.execute();
         }
@@ -66,11 +68,16 @@ public class MARK1 extends AdvancedRobot {
         conf.setStart(new Point((int) this.getX(), (int) this.getY()));
         conf.setEnd(new Point(e.getX(), e.getY()));
 
-        System.out.println("Moving to selected point!");
         points = new ArrayList<>();
         // chamada ao algoritmo genético
-        points = GeneticAlgorithm.markGeneticAlgorithm(4 , 10 , 0.5 , conf);
-        currentPoint = 0;
+        points = GeneticAlgorithm.markGeneticAlgorithm(3 , 1000 , 0.5 , conf);
+        if (points != null) {
+            System.out.println("> Moving to selected target!");
+            currentPoint = 0;
+        }
+        else {
+            System.out.println("> System could not find any available route...");
+        }
     }
 
     /**

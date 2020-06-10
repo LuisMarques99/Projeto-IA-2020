@@ -18,9 +18,8 @@ import java.util.Random;
 public class GeneticAlgorithm extends AdvancedRobot{
 
     private static boolean flag = false;
-    private static int deck = 0;
 
-    public static List<IPoint> markGeneticAlgorithm(int populationSize , int maxIterations , double mutationFactor , UIConfiguration conf){
+    public static List<IPoint> markGeneticAlgorithm(int populationSize , int maxIterations , double mutationFactor , UIConfiguration conf) {
         int i = 0 , a = 0;
         double index, prevIndex = 0;
         List<IPoint> finalPointList = null; //lista final onde vai guardado o melhor caminho a seguir
@@ -66,16 +65,11 @@ public class GeneticAlgorithm extends AdvancedRobot{
              */
             if(index > prevIndex){
                 finalPointList = points;
-                //prevIndex = index; esta variável so se descomenta depois de implementar a funcao getFitness()!
+                prevIndex = index;
             }
             points = new ArrayList<>();
             i++;
         } while (i < maxIterations);
-
-        if(deck > 0)
-            System.out.println("At least one possible route was found!");
-        else
-            System.out.println("The system could not find any available routes...");
 
         return finalPointList;
     }
@@ -86,17 +80,64 @@ public class GeneticAlgorithm extends AdvancedRobot{
      * @return quantidade de pontos
      */
     public static double getFitness(List<IPoint> points){
+        //se o camiho resulta num caminho que nao passa por cima de nenhuma posicao inimiga, entao ganha 2000 pontos de fitness automáticamente.
         double fitnessPoints = 0;
-        if(flag == false){
-            fitnessPoints = 100;
-            deck++;
+        if(points != null){
+            if(flag == false){
+                fitnessPoints += 2000;
+            }
+            flag = false;
+            double distance = 0;
+
+            for(int a = 0 ; a < points.size() - 1 ; a++){
+                distance += getDistanceBetweenPoints(points.get(a) , points.get(a + 1));
+            }
+
+            fitnessPoints -= distance;
         }
-        flag = false;
+        else {
+            fitnessPoints = 0;
+        }
         /*
         Se for feito com o modelo de populacao generational significa que metemos aqui todos os pontos de um unico caminho
         para ver qual o seu fitness, pois a seguir, como estamos a utilizar o modelo generational, toda essa populacao vai ser
         substituida. ISTO ADMITINDO QUE UTILIZAMOS ESSE MODELO!
          */
         return fitnessPoints;
+    }
+
+    /**
+     * Funcao responsavel por retornar o valor double de distancia entre 2 pontos na lista de pontos do caminho a seguir pelo robot
+     * @param point1 ponto de partida
+     * @param point2 ponto de chegada
+     * @return valor double de distancia entre os dois pontos
+     */
+    public static double getDistanceBetweenPoints(IPoint point1 , IPoint point2){
+        int x1 = point1.getX();
+        int y1 = point1.getY();
+        int x2 = point2.getX();
+        int y2 = point2.getY();
+        double distance = 0;
+        double yAxis = 0;
+        double xAxis = 0;
+
+        if(x1 > x2 && y1 > y2){ //↙
+            yAxis = y1 - y2;
+            xAxis = x1 - x2;
+        }
+        else if(x1 > x2 && y2 > y1){ //↖
+            yAxis = y2 - y1;
+            xAxis = x1 - x2;
+        }
+        else if(x2 > x1 && y1 > y2){ //↘
+            yAxis = y1 - y2;
+            xAxis = x2 - x1;
+        }
+        else { //↗
+            yAxis = y2 - y1;
+            xAxis = x2 - x1;
+        }
+        distance = Math.sqrt((yAxis * yAxis) + (xAxis * xAxis));
+        return distance;
     }
 }
