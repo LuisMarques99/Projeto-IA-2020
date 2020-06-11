@@ -80,11 +80,11 @@ public class GeneticAlgorithm extends AdvancedRobot{
      * @return quantidade de pontos
      */
     public static double getFitness(List<IPoint> points){
-        //se o camiho resulta num caminho que nao passa por cima de nenhuma posicao inimiga, entao ganha 2000 pontos de fitness automáticamente.
+        //se o caminho resulta num caminho que nao passa por cima de nenhuma posicao inimiga, entao ganha 10000 pontos de fitness automáticamente.
         double fitnessPoints = 0;
         if(points != null){
             if(flag == false){
-                fitnessPoints += 2000;
+                fitnessPoints += 10000;
             }
             flag = false;
             double distance = 0;
