@@ -19,7 +19,7 @@ public class GeneticAlgorithm extends AdvancedRobot{
 
     private static boolean flag = false;
 
-    public static List<IPoint> markGeneticAlgorithm(int populationSize , int maxIterations , double mutationFactor , UIConfiguration conf) {
+    public static List<IPoint> markGeneticAlgorithm(int populationSize , int maxIterations , double mutationRate , UIConfiguration conf) {
         int i = 0 , a = 0;
         double index, prevIndex = 0;
         List<IPoint> finalPointList = null; //lista final onde vai guardado o melhor caminho a seguir
@@ -33,8 +33,10 @@ public class GeneticAlgorithm extends AdvancedRobot{
             points.add(new Point(x1Value,y1Value)); //adicionar o ponto de partida do robot como ponto de partida
 
             do{
-                int x2Value = rand.nextInt(conf.getWidth());
-                int y2Value = rand.nextInt(conf.getHeight());
+                int x2Value = rand.nextInt(conf.getWidth() - 20);
+                x2Value += 20;
+                int y2Value = rand.nextInt(conf.getHeight() - 20);
+                y2Value += 20;
 
                 Line2D line1 = new Line2D.Double(x1Value,y1Value,x2Value,y2Value);
 
@@ -71,6 +73,7 @@ public class GeneticAlgorithm extends AdvancedRobot{
             i++;
         } while (i < maxIterations);
 
+        mutateList(finalPointList , mutationRate);
         return finalPointList;
     }
 
@@ -139,5 +142,13 @@ public class GeneticAlgorithm extends AdvancedRobot{
         }
         distance = Math.sqrt((yAxis * yAxis) + (xAxis * xAxis));
         return distance;
+    }
+
+    public static List<IPoint> mutateList(List<IPoint> list , double mutationRate){
+        /*
+        a ideia aqui é ir a cada ponto do caminho ja escolhido como valido e mais curto e modificar os seus pontos
+        de X e Y um a um e ver se o seu fitness aumenta!
+         */
+        return list;
     }
 }
