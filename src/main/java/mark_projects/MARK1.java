@@ -43,17 +43,19 @@ public class MARK1 extends AdvancedRobot {
             this.setTurnRadarRight(360);
 
             //se se está a dirigir para algum ponto
-            if (currentPoint >= 0)
-            {
-                IPoint ponto = points.get(currentPoint);
-                //se já está no ponto ou lá perto...
-                if (Utils.getDistance(this, ponto.getX(), ponto.getY()) < 2){
-                    currentPoint++;
-                    //se chegou ao fim do caminho
-                    if (currentPoint >= points.size())
-                        currentPoint = -1;
+            if (points != null){
+                if (currentPoint >= 0)
+                {
+                    IPoint ponto = points.get(currentPoint);
+                    //se já está no ponto ou lá perto...
+                    if (Utils.getDistance(this, ponto.getX(), ponto.getY()) < 2){
+                        currentPoint++;
+                        //se chegou ao fim do caminho
+                        if (currentPoint >= points.size())
+                            currentPoint = -1;
+                    }
+                    advancedRobotGoTo(this, ponto.getX(), ponto.getY());
                 }
-                advancedRobotGoTo(this, ponto.getX(), ponto.getY());
             }
             this.execute();
         }
@@ -66,11 +68,16 @@ public class MARK1 extends AdvancedRobot {
         conf.setStart(new Point((int) this.getX(), (int) this.getY()));
         conf.setEnd(new Point(e.getX(), e.getY()));
 
-        System.out.println("Moving to selected point!");
         points = new ArrayList<>();
         // chamada ao algoritmo genético
-        GeneticAlgorithm.markGeneticAlgorithm(points , 20 , 10 , 0.5);
-        currentPoint = 0;
+        points = GeneticAlgorithm.markGeneticAlgorithm(3 , 1000 , 0.3 , conf);
+        if (points != null) {
+            System.out.println("> Moving to selected target!");
+            currentPoint = 0;
+        }
+        else {
+            System.out.println("> System could not find any available route...");
+        }
     }
 
     /**
@@ -96,10 +103,7 @@ public class MARK1 extends AdvancedRobot {
         super.onScannedRobot(event);
 
         //Nao é suposto este robot disparar a ninguem logo a chamada a Bullet nao é feita aqui ainda
-        System.out.println("Enemy spotted: " + event.getName());
-
         Point2D.Double ponto = getEnemyCoordinates(this, event.getBearing(), event.getDistance());
-        System.out.println("Enemy coordinates: " + ponto + "\n");
 
         ponto.x -= this.getWidth()*2.5 / 2;
         ponto.y -= this.getHeight()*2.5 / 2;
