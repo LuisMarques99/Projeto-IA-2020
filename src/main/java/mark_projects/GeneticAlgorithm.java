@@ -3,6 +3,7 @@ package mark_projects;
 import impl.Point;
 import impl.UIConfiguration;
 import interf.IPoint;
+import jdk.nashorn.internal.ir.LiteralNode;
 import robocode.AdvancedRobot;
 
 import java.awt.*;
@@ -17,7 +18,7 @@ import java.util.List;
 public class GeneticAlgorithm extends AdvancedRobot{
 
     private static ArrayList<List<IPoint>> pointsList = new ArrayList<>(); //lista de listas de pontos
-    private static List<IPoint> finalPointList = null; //lista final onde vai guardado o melhor caminho a seguir
+    private static List<IPoint> finalPointList = new ArrayList<>(); //lista final onde vai guardado o melhor caminho a seguir
 
     /**
      * Funcao responsavel por determinar um caminho valido a percorrer pelo robot desde o ponto de partida ao ponto de chegada
@@ -63,7 +64,8 @@ public class GeneticAlgorithm extends AdvancedRobot{
              * 1º selecao feita aqui:
              */
             if(index > prevIndex){
-                finalPointList = points;
+                finalPointList.clear();
+                for(int j = 0 ; j < points.size() ; j++){ finalPointList.add(points.get(j)); }
                 prevIndex = index;
             }
             pointsList.add(points); //guardar todos os caminhos gerados (podem ser validos ou inválidos)
@@ -73,7 +75,6 @@ public class GeneticAlgorithm extends AdvancedRobot{
 
         reproducePopulation(pointsList , conf); //2º selecao feita aqui
         //mutateList(finalPointList , mutationRate); //mutacao da melhor selecao feita aqui
-        System.out.println("Fitness final: " + getFitness(finalPointList , conf));
         return finalPointList;
     }
 
@@ -162,35 +163,32 @@ public class GeneticAlgorithm extends AdvancedRobot{
      */
     public static void reproducePopulation(ArrayList<List<IPoint>> pointsList , UIConfiguration conf){
         Random rand = new Random();
-        System.out.println("Melhor fitness registado até ao momento: " + getFitness(finalPointList , conf));
-        System.out.println("Pontos da lista: " + finalPointList.toString() + "\n\n\n");
 
-        for(int a = 0 ; a < pointsList.size() - 1 ; a = a + 2){
-            int point1 = rand.nextInt((pointsList.get(0).size() - 1) - 1) + 1;
-            int point2 = point1;
+        while (getFitness(finalPointList , conf) < 0){
+            for(int a = 0 ; a < pointsList.size() - 1 ; a = a + 2){
+                int point1 = rand.nextInt((pointsList.get(0).size() - 1) - 1) + 1;
+                int point2 = point1;
 
-            while (point2 == point1){
-                point2 = rand.nextInt((pointsList.get(0).size() - 1) - 1) + 1;
+                while (point2 == point1){
+                    point2 = rand.nextInt((pointsList.get(0).size() - 1) - 1) + 1;
+                }
+                IPoint p1 = pointsList.get(a).get(point1);
+                IPoint p2 = pointsList.get(a).get(point2);
+
+                pointsList.get(a).set(point1 , pointsList.get(a + 1).get(point1));
+                pointsList.get(a).set(point2 , pointsList.get(a + 1).get(point2));
+                pointsList.get(a + 1).set(point1 , p1);
+                pointsList.get(a + 1).set(point2 , p2);
             }
-            IPoint p1 = pointsList.get(a).get(point1);
-            IPoint p2 = pointsList.get(a).get(point2);
 
-            pointsList.get(a).set(point1 , pointsList.get(a + 1).get(point1));
-            pointsList.get(a).set(point2 , pointsList.get(a + 1).get(point2));
-            pointsList.get(a + 1).set(point1 , p1);
-            pointsList.get(a + 1).set(point2 , p2);
-            System.out.println("Fitness da lista original depois de passar pelo cruzamento: " + getFitness(finalPointList , conf));
-            System.out.println("Pontos da lista agora: " + finalPointList.toString());
-        }
-
-        for(int b = 0 ; b < pointsList.size() ; b++){
-            System.out.println(getFitness(finalPointList , conf));
-            double score = getFitness(pointsList.get(b) , conf);
-            if(score > getFitness(finalPointList , conf)){
-                System.out.println("Score atual: " + score + " > " + "Score anterior: " + getFitness(finalPointList , conf));
-                finalPointList = pointsList.get(b);
-                System.out.println("Lista atualizada para uma melhor solucao de cruzamentos com um fitness de: " + score);
+            for(int b = 0 ; b < pointsList.size() ; b++){
+                double score = 0;
+                score = getFitness(pointsList.get(b) , conf);
+                if(score > getFitness(finalPointList , conf)){
+                    finalPointList = pointsList.get(b);
+                }
             }
+            Collections.shuffle(pointsList);
         }
     }
 
