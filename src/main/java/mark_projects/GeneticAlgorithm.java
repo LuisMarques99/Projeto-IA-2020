@@ -20,17 +20,27 @@ public class GeneticAlgorithm extends AdvancedRobot{
     private static ArrayList<List<IPoint>> pointsList = new ArrayList<>(); //lista de listas de pontos
     private static List<IPoint> finalPointList = new ArrayList<>(); //lista final onde vai guardado o melhor caminho a seguir
 
+    public static int getGeneration() {
+        return generation;
+    }
+
+    public static void setGeneration(int generation) {
+        GeneticAlgorithm.generation = generation;
+    }
+
+    private static int generation = 0;
+
     /**
      * Funcao responsavel por determinar um caminho valido a percorrer pelo robot desde o ponto de partida ao ponto de chegada
      * Algoritmo genetico determina o caminho valido mais curto encontrado entre 2 pontos usando tecnicas de cruzamento, selecao
      * e mutacao genetica
-     * @param populationSize quantidade de pontos maximo existente no caminho a percorrer
+     * @param numberOfPoints quantidade de pontos maximo existente no caminho a percorrer
      * @param maxIterations numero de iteracoes maxima permitida para o algoritmo gerar novas populacoes
      * @param mutationRate taxa de mutacao aplicavel ao melhor caminho encontrado
      * @param conf configuracao inicial do mapa carregado (dimensao, obstaculos)
      * @return retorna o melhor caminho calculado a ser percorrido pelo robot
      */
-    public static List<IPoint> markGeneticAlgorithm(int populationSize , int maxIterations , double mutationRate , UIConfiguration conf) {
+    public static List<IPoint> markGeneticAlgorithm(int numberOfPoints , int maxIterations , double mutationRate , UIConfiguration conf) {
         int i = 0 , a = 1;
         double index, prevIndex = Integer.MIN_VALUE;
         List<IPoint> points = new ArrayList<>(); //lista temporária onde vai ser carregado novas populacoes a cada iteracao
@@ -48,13 +58,13 @@ public class GeneticAlgorithm extends AdvancedRobot{
                 y2Value += 20;
 
                 //se o ponto onde nos encontramos for o ultimo ponto entao adiciona esse como o ponto seleccionado pelo utilizador
-                if(a == populationSize - 1){
+                if(a == numberOfPoints - 1){
                     x2Value = conf.getEnd().getX();
                     y2Value = conf.getEnd().getY();
                 }
                 points.add(new Point(x2Value , y2Value));
                 a++;
-            } while(a < populationSize);
+            } while(a < numberOfPoints);
             a = 1;
             index = getFitness(points , conf);
 
@@ -72,7 +82,7 @@ public class GeneticAlgorithm extends AdvancedRobot{
             points = new ArrayList<>();
             i++;
         } while (i < maxIterations);
-
+        setGeneration(generation++);
         reproducePopulation(pointsList , conf); //2º selecao feita aqui
         //mutateList(finalPointList , mutationRate); //mutacao da melhor selecao feita aqui
         return finalPointList;
@@ -189,6 +199,7 @@ public class GeneticAlgorithm extends AdvancedRobot{
                 }
             }
             Collections.shuffle(pointsList);
+            setGeneration(generation++);
         }
     }
 
