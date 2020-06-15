@@ -22,16 +22,19 @@ public class PathDrawingSample {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+        int numberOfPaths = 2000; //mudar aqui!
         List<IPoint> points;
-        points = GeneticAlgorithm.markGeneticAlgorithm(4 , 4000 , 0.5 , (UIConfiguration) conf);
+        points = GeneticAlgorithm.markGeneticAlgorithm(4 , numberOfPaths , 0.05 , (UIConfiguration) conf);
 
-        Evaluate eval = new Evaluate(4000 , 0 , "C´mon Champ! It´s warmup time.");
+        /*
+        Evaluate eval = new Evaluate(numberOfPaths , 1 , "C´mon Champ! It´s warmup time.");
         eval.addSolution(points , GeneticAlgorithm.getGeneration());
 
         if(eval.submit())
             System.out.println("> Resultado submetido para o servidor");
         else
             System.out.println("> Erro a submeter resultado.");
+         */
 
         PathViewer pv = new PathViewer(conf);
         pv.paintPath(points);

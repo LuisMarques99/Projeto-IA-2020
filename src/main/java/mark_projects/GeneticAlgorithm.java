@@ -3,7 +3,6 @@ package mark_projects;
 import impl.Point;
 import impl.UIConfiguration;
 import interf.IPoint;
-import jdk.nashorn.internal.ir.LiteralNode;
 import robocode.AdvancedRobot;
 
 import java.awt.*;
@@ -84,7 +83,7 @@ public class GeneticAlgorithm extends AdvancedRobot{
         } while (i < maxIterations);
         setGeneration(generation++);
         reproducePopulation(pointsList , conf); //2º selecao feita aqui
-        //mutateList(finalPointList , mutationRate); //mutacao da melhor selecao feita aqui
+        mutateList(finalPointList , mutationRate , conf); //mutacao da melhor selecao feita aqui
         return finalPointList;
     }
 
@@ -157,12 +156,61 @@ public class GeneticAlgorithm extends AdvancedRobot{
      * a lista de pontos que entrou como parametro.
      * @param list a lista válida original
      * @param mutationRate  taxa de mutacao a aplicar a um ponto aleatorio na lista
+     * @param configuration configuracao inicial do mapa
      * @return uma lista válida mutada se possivel. retorna a lista original se impossivel.
      */
-    public static List<IPoint> mutateList(List<IPoint> list , double mutationRate){
-        /*
-        ir a 1 ponto aleatorio do melhor caminho selecionado e modificar a sua posicao em +/- conf.get(pos).getXouY();
-         */
+    public static List<IPoint> mutateList(List<IPoint> list , double mutationRate , UIConfiguration configuration){
+        double fit1 = getFitness(finalPointList , configuration);
+
+        System.out.println("Fitness inicial: " + fit1);
+        System.out.print("Lista antes da mutacao: " + finalPointList.toString());
+        System.out.println("\n");
+
+        for(int a = 1 ; a < finalPointList.size() - 1 ; a++){
+           int newX = (int) (finalPointList.get(a).getX() * mutationRate);
+           int newY = (int) (finalPointList.get(a).getY() * mutationRate);
+           fit1 = getFitness(finalPointList , configuration);
+
+           //mutacao no eixo dos XX:
+            //newX vai tomar sempre o valor maximo possivel de ser aplicado ao novo ponto sem que ultrapasse os limites do mapa
+           if (configuration.getWidth() - finalPointList.get(a).getX() < newX){
+               newX = configuration.getWidth() - finalPointList.get(a).getX();
+           }
+
+           Point p1 = new Point(finalPointList.get(a).getX() + newX , finalPointList.get(a).getY());
+           finalPointList.set(a , p1);
+
+           double fit2 = getFitness(finalPointList , configuration);
+
+           if (fit2 < fit1){
+               int prevX = finalPointList.get(a).getX() - newX;
+               p1 = new Point(prevX , finalPointList.get(a).getY());
+               finalPointList.set(a , p1);
+
+               newX = (int) (finalPointList.get(a).getX() * mutationRate);
+               if((finalPointList.get(a).getX() - newX) < 0){
+                    newX = finalPointList.get(a).getX() - 1;
+               }
+               p1 = new Point(finalPointList.get(a).getX() - newX , finalPointList.get(a).getY());
+               finalPointList.set(a , p1);
+
+               fit2 = getFitness(finalPointList , configuration);
+
+               if (fit2 < fit1){
+                    prevX = finalPointList.get(a).getX() + newX;
+                    p1 = new Point(prevX , finalPointList.get(a).getY());
+                    finalPointList.set(a , p1);
+               }
+
+               //mutacao no eixo dos YY:
+               //(...)
+           }
+        }
+
+        System.out.println("Fitness final: " + getFitness(finalPointList , configuration));
+        System.out.print("Lista depois da mutacao: ");
+        System.out.println(finalPointList.toString());
+
         return list;
     }
 
