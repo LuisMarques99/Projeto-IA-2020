@@ -201,10 +201,40 @@ public class GeneticAlgorithm extends AdvancedRobot{
                     p1 = new Point(prevX , finalPointList.get(a).getY());
                     finalPointList.set(a , p1);
                }
-
-               //mutacao no eixo dos YY:
-               //(...)
            }
+            fit1 = getFitness(finalPointList , configuration);
+
+            //mutacao no eixo dos YY:
+            if (configuration.getHeight() - finalPointList.get(a).getY() < newY){
+                newY = configuration.getHeight() - finalPointList.get(a).getY();
+            }
+
+            p1 = new Point(finalPointList.get(a).getX() , finalPointList.get(a).getY() + newY);
+            finalPointList.set(a , p1);
+
+            fit2 = getFitness(finalPointList , configuration);
+
+            if (fit2 < fit1){
+                int prevY = finalPointList.get(a).getY() - newY;
+                p1 = new Point(finalPointList.get(a).getX() , prevY);
+                finalPointList.set(a , p1);
+
+                newY = (int) (finalPointList.get(a).getY() * mutationRate);
+                if ((finalPointList.get(a).getY() - newY) < 0){
+                    newY = finalPointList.get(a).getY() - 1;
+                }
+
+                p1 = new Point(finalPointList.get(a).getX() , finalPointList.get(a).getY() - newY);
+                finalPointList.set(a , p1);
+
+                fit2 = getFitness(finalPointList , configuration);
+
+                if (fit2 < fit1){
+                    prevY = finalPointList.get(a).getY() + newY;
+                    p1 = new Point(finalPointList.get(a).getX() , prevY);
+                    finalPointList.set(a , p1);
+                }
+            }
         }
 
         System.out.println("Fitness final: " + getFitness(finalPointList , configuration));
