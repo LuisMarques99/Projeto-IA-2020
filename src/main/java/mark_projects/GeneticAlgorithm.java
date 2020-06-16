@@ -163,110 +163,109 @@ public class GeneticAlgorithm extends AdvancedRobot {
      * @return uma lista válida mutada se possivel. retorna a lista original se impossivel.
      */
     public static List<IPoint> mutateList(List<IPoint> list, double mutationRate, UIConfiguration configuration) {
-        double fit1 = getFitness(finalPointList, configuration);
-        double fitnessInit = getFitness(finalPointList, configuration);
+        double fit1 = getFitness(list, configuration);
+        double fitnessInit = getFitness(list, configuration);
         double fitnessFinal = 0;
 
         System.out.println("\nFitness inicial: " + fit1);
-        System.out.print("Lista antes da mutacao: " + finalPointList.toString());
+        System.out.print("Lista antes da mutacao: " + list.toString());
         System.out.println("\n");
 
         while (fitnessInit > fitnessFinal) {
             fitnessFinal = fitnessInit;
-            for (int a = 1; a < finalPointList.size() - 1; a++) {
+            for (int a = 1; a < list.size() - 1; a++) {
                 int newX = 0;
                 int newY = 0;
-                if (finalPointList.get(a).getX() > (configuration.getWidth() - 100) || finalPointList.get(a).getX() < 100) {
+                if (list.get(a).getX() > (configuration.getWidth() - 100) || list.get(a).getX() < 100) {
                     newX = (int) (60 * mutationRate);
-                } else if (finalPointList.get(a).getY() > (configuration.getHeight() - 100) || finalPointList.get(a).getY() < 100) {
+                } else if (list.get(a).getY() > (configuration.getHeight() - 100) || list.get(a).getY() < 100) {
                     newY = (int) (60 * mutationRate);
                 } else {
-                    newX = (int) (finalPointList.get(a).getX() * mutationRate);
-                    newY = (int) (finalPointList.get(a).getY() * mutationRate);
+                    newX = (int) (list.get(a).getX() * mutationRate);
+                    newY = (int) (list.get(a).getY() * mutationRate);
                 }
-                fit1 = getFitness(finalPointList, configuration);
+                fit1 = getFitness(list, configuration);
 
                 //mutacao no eixo dos XX:
                 //newX vai tomar sempre o valor maximo possivel de ser aplicado ao novo ponto sem que ultrapasse os limites do mapa
-                if (configuration.getWidth() - finalPointList.get(a).getX() < newX) {
-                    newX = configuration.getWidth() - finalPointList.get(a).getX();
+                if (configuration.getWidth() - list.get(a).getX() < newX) {
+                    newX = configuration.getWidth() - list.get(a).getX();
                 }
 
-                Point p1 = new Point(finalPointList.get(a).getX() + newX, finalPointList.get(a).getY());
-                finalPointList.set(a, p1);
+                Point p1 = new Point(list.get(a).getX() + newX, list.get(a).getY());
+                list.set(a, p1);
 
-                double fit2 = getFitness(finalPointList, configuration);
+                double fit2 = getFitness(list, configuration);
 
                 if (fit2 < fit1) {
-                    int prevX = finalPointList.get(a).getX() - newX;
-                    p1 = new Point(prevX, finalPointList.get(a).getY());
-                    finalPointList.set(a, p1);
+                    int prevX = list.get(a).getX() - newX;
+                    p1 = new Point(prevX, list.get(a).getY());
+                    list.set(a, p1);
 
-                    if (finalPointList.get(a).getX() > (configuration.getWidth() - 100) || finalPointList.get(a).getX() < 100) {
+                    if (list.get(a).getX() > (configuration.getWidth() - 100) || list.get(a).getX() < 100) {
                         newX = (int) (60 * mutationRate);
                     } else {
-                        newX = (int) (finalPointList.get(a).getX() * mutationRate);
+                        newX = (int) (list.get(a).getX() * mutationRate);
                     }
 
-                    if ((finalPointList.get(a).getX() - newX) < 0) {
-                        newX = finalPointList.get(a).getX() - 1;
+                    if ((list.get(a).getX() - newX) < 0) {
+                        newX = list.get(a).getX() - 1;
                     }
-                    p1 = new Point(finalPointList.get(a).getX() - newX, finalPointList.get(a).getY());
-                    finalPointList.set(a, p1);
+                    p1 = new Point(list.get(a).getX() - newX, list.get(a).getY());
+                    list.set(a, p1);
 
-                    fit2 = getFitness(finalPointList, configuration);
+                    fit2 = getFitness(list, configuration);
 
                     if (fit2 < fit1) {
-                        prevX = finalPointList.get(a).getX() + newX;
-                        p1 = new Point(prevX, finalPointList.get(a).getY());
-                        finalPointList.set(a, p1);
+                        prevX = list.get(a).getX() + newX;
+                        p1 = new Point(prevX, list.get(a).getY());
+                        list.set(a, p1);
                     }
                 }
-                fit1 = getFitness(finalPointList, configuration);
+                fit1 = getFitness(list, configuration);
 
                 //mutacao no eixo dos YY:
-                if (configuration.getHeight() - finalPointList.get(a).getY() < newY) {
-                    newY = configuration.getHeight() - finalPointList.get(a).getY();
+                if (configuration.getHeight() - list.get(a).getY() < newY) {
+                    newY = configuration.getHeight() - list.get(a).getY();
                 }
 
-                p1 = new Point(finalPointList.get(a).getX(), finalPointList.get(a).getY() + newY);
-                finalPointList.set(a, p1);
+                p1 = new Point(list.get(a).getX(), list.get(a).getY() + newY);
+                list.set(a, p1);
 
-                fit2 = getFitness(finalPointList, configuration);
+                fit2 = getFitness(list, configuration);
 
                 if (fit2 < fit1) {
-                    int prevY = finalPointList.get(a).getY() - newY;
-                    p1 = new Point(finalPointList.get(a).getX(), prevY);
-                    finalPointList.set(a, p1);
+                    int prevY = list.get(a).getY() - newY;
+                    p1 = new Point(list.get(a).getX(), prevY);
+                    list.set(a, p1);
 
-                    if (finalPointList.get(a).getY() > (configuration.getHeight() - 100) || finalPointList.get(a).getY() < 100) {
+                    if (list.get(a).getY() > (configuration.getHeight() - 100) || list.get(a).getY() < 100) {
                         newY = (int) (60 * mutationRate);
                     } else {
-                        newY = (int) (finalPointList.get(a).getY() * mutationRate);
+                        newY = (int) (list.get(a).getY() * mutationRate);
                     }
 
-                    if ((finalPointList.get(a).getY() - newY) < 0) {
-                        newY = finalPointList.get(a).getY() - 1;
+                    if ((list.get(a).getY() - newY) < 0) {
+                        newY = list.get(a).getY() - 1;
                     }
 
-                    p1 = new Point(finalPointList.get(a).getX(), finalPointList.get(a).getY() - newY);
-                    finalPointList.set(a, p1);
+                    p1 = new Point(list.get(a).getX(), list.get(a).getY() - newY);
+                    list.set(a, p1);
 
-                    fit2 = getFitness(finalPointList, configuration);
+                    fit2 = getFitness(list, configuration);
 
                     if (fit2 < fit1) {
-                        prevY = finalPointList.get(a).getY() + newY;
-                        p1 = new Point(finalPointList.get(a).getX(), prevY);
-                        finalPointList.set(a, p1);
+                        prevY = list.get(a).getY() + newY;
+                        p1 = new Point(list.get(a).getX(), prevY);
+                        list.set(a, p1);
                     }
                 }
             }
-            fitnessInit = getFitness(finalPointList, configuration);
-            System.out.println("Fitness final: " + getFitness(finalPointList, configuration));
+            fitnessInit = getFitness(list, configuration);
+            System.out.println("\nFitness final: " + getFitness(list, configuration));
             System.out.print("Lista depois da mutacao: ");
-            System.out.println(finalPointList.toString());
+            System.out.println(list.toString());
         }
-
         return list;
     }
 
