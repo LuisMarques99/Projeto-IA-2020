@@ -35,12 +35,12 @@ public class GeneticAlgorithm extends AdvancedRobot {
      * e mutacao genetica
      *
      * @param numberOfPoints quantidade de pontos maximo existente no caminho a percorrer
-     * @param maxIterations  numero de iteracoes maxima permitida para o algoritmo gerar novas populacoes
+     * @param maxPaths       numero de caminhos maximo permitida para o algoritmo gerar
      * @param mutationRate   taxa de mutacao aplicavel ao melhor caminho encontrado
      * @param conf           configuracao inicial do mapa carregado (dimensao, obstaculos)
      * @return retorna o melhor caminho calculado a ser percorrido pelo robot
      */
-    public static List<IPoint> markGeneticAlgorithm(int numberOfPoints, int maxIterations, double mutationRate, UIConfiguration conf) {
+    public static List<IPoint> markGeneticAlgorithm(int numberOfPoints, int maxPaths, double mutationRate, UIConfiguration conf) {
         int i = 0, a = 1;
         double index, prevIndex = Integer.MIN_VALUE;
         List<IPoint> points = new ArrayList<>(); //lista temporária onde vai ser carregado novas populacoes a cada iteracao
@@ -83,7 +83,13 @@ public class GeneticAlgorithm extends AdvancedRobot {
             pointsList.add(points); //guardar todos os caminhos gerados (podem ser validos ou inválidos)
             points = new ArrayList<>();
             i++;
-        } while (i < maxIterations);
+
+            //garantia de saida com pelo menos uma lista valida para ser melhorada por cruzamento e aperfeicoada por mutacao
+            if (i == maxPaths && getFitness(finalPointList, conf) < 0) {
+                pointsList.clear();
+                i = 0;
+            }
+        } while (i < maxPaths);
         setGeneration(generation++);
         reproducePopulation(pointsList, conf); //2º selecao feita aqui
         mutateList(finalPointList, mutationRate, conf); //mutacao da melhor selecao feita aqui
