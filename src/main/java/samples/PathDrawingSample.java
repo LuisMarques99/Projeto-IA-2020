@@ -18,15 +18,15 @@ public class PathDrawingSample {
 
     public static void main(String[] args) {
         try {
-            conf = Maps.getMap(0);
+            conf = Maps.getMap(10);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        int numberOfPaths = 10; //mudar aqui!
+        int numberOfPaths = 4; //mudar aqui!
         List<IPoint> points;
-        points = GeneticAlgorithm.markGeneticAlgorithm(4, numberOfPaths, 0.10, (UIConfiguration) conf);
+        points = GeneticAlgorithm.markGeneticAlgorithm(4, numberOfPaths, 0.01, (UIConfiguration) conf);
 
-        Evaluate eval = new Evaluate(numberOfPaths, 0, "C´mon Champ! It´s warmup time.");
+        Evaluate eval = new Evaluate(numberOfPaths, 10, "C´mon Champ! It´s warmup time.");
         eval.addSolution(points, GeneticAlgorithm.getGeneration());
 
         if (eval.submit())

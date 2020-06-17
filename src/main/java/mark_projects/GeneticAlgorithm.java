@@ -118,11 +118,6 @@ public class GeneticAlgorithm extends AdvancedRobot {
         }
 
         fitnessPoints -= distance;
-        /*
-        Se for feito com o modelo de populacao generational significa que metemos aqui todos os pontos de um unico caminho
-        para ver qual o seu fitness, pois a seguir, como estamos a utilizar o modelo generational, toda essa populacao vai ser
-        substituida. ISTO ADMITINDO QUE UTILIZAMOS ESSE MODELO!
-         */
         return fitnessPoints;
     }
 
@@ -172,10 +167,6 @@ public class GeneticAlgorithm extends AdvancedRobot {
         double fit1 = getFitness(list, configuration);
         double fitnessInit = getFitness(list, configuration);
         double fitnessFinal = 0;
-
-        System.out.println("\nFitness inicial: " + fit1);
-        System.out.print("Lista antes da mutacao: " + list.toString());
-        System.out.println("\n");
 
         while (fitnessInit > fitnessFinal) {
             fitnessFinal = fitnessInit;
@@ -267,10 +258,6 @@ public class GeneticAlgorithm extends AdvancedRobot {
                     }
                 }
             }
-            fitnessInit = getFitness(list, configuration);
-            System.out.println("\nFitness final: " + getFitness(list, configuration));
-            System.out.print("Lista depois da mutacao: ");
-            System.out.println(list.toString());
         }
         return list;
     }
