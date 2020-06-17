@@ -82,7 +82,7 @@ public class MARK1 extends AdvancedRobot {
     /**
      * ******** TODO: Necessário selecionar a opção Paint na consola do Robot *******
      *
-     * @param g
+     * @param g g
      */
     @Override
     public void onPaint(Graphics2D g) {

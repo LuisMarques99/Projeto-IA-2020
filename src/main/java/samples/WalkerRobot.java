@@ -70,10 +70,11 @@ public class WalkerRobot extends AdvancedRobot {
         //Utils.advancedRobotGoTo(this, points.get(i).getX(), points.get(i).getY());
     }
 
+
     /**
      * ******** TODO: Necessário selecionar a opção Paint na consola do Robot *******
      *
-     * @param
+     * @param g g
      */
     @Override
     public void onPaint(Graphics2D g) {
