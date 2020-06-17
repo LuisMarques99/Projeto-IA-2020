@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 /**
  * Class that represents the structure of a {@link CSVFileWriter CSV File Writer}
+ * @author Luis Marques
  */
 public class CSVFileWriter {
     /**
