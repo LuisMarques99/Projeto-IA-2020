@@ -44,6 +44,8 @@ public class GeneticAlgorithm extends AdvancedRobot {
         int i = 0, a = 1;
         double index, prevIndex = Integer.MIN_VALUE;
         List<IPoint> points = new ArrayList<>(); //lista temporária onde vai ser carregado novas populacoes a cada iteracao
+        finalPointList = new ArrayList<>();
+        pointsList = new ArrayList<>();
         Random rand = new Random();
 
         do {
@@ -270,8 +272,10 @@ public class GeneticAlgorithm extends AdvancedRobot {
      */
     public static void reproducePopulation(ArrayList<List<IPoint>> pointsList, UIConfiguration conf) {
         Random rand = new Random();
+        int index = 0;
+        double score;
 
-        while (getFitness(finalPointList, conf) < 0) {
+        while (index < pointsList.size() * 0.10) {
             for (int a = 0; a < pointsList.size() - 1; a = a + 2) {
                 int point1 = rand.nextInt((pointsList.get(0).size() - 1) - 1) + 1;
                 int point2 = point1;
@@ -289,7 +293,6 @@ public class GeneticAlgorithm extends AdvancedRobot {
             }
 
             for (int b = 0; b < pointsList.size(); b++) {
-                double score = 0;
                 score = getFitness(pointsList.get(b), conf);
                 if (score > getFitness(finalPointList, conf)) {
                     finalPointList = pointsList.get(b);
@@ -297,6 +300,7 @@ public class GeneticAlgorithm extends AdvancedRobot {
             }
             Collections.shuffle(pointsList);
             setGeneration(generation++);
+            index++;
         }
     }
 
