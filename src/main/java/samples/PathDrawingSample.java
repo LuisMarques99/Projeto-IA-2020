@@ -18,18 +18,18 @@ public class PathDrawingSample {
 
     public static void main(String[] args) {
         try {
-            conf = Maps.getMap(1);
+            conf = Maps.getMap(10);
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        int numberOfPaths = 100; //mudar aqui!
+        int numberOfPaths = 4; //mudar aqui!
         List<IPoint> points;
-        points = GeneticAlgorithm.markGeneticAlgorithm(3 , numberOfPaths , 0.07 , (UIConfiguration) conf);
+        points = GeneticAlgorithm.markGeneticAlgorithm(4, numberOfPaths, 0.01, (UIConfiguration) conf);
 
-        Evaluate eval = new Evaluate(numberOfPaths , 1 , "C´mon Champ! It´s warmup time.");
-        eval.addSolution(points , GeneticAlgorithm.getGeneration());
+        Evaluate eval = new Evaluate(numberOfPaths, 10, "C´mon Champ! It´s warmup time.");
+        eval.addSolution(points, GeneticAlgorithm.getGeneration());
 
-        if(eval.submit())
+        if (eval.submit())
             System.out.println("> Resultado submetido para o servidor");
         else
             System.out.println("> Erro a submeter resultado.");

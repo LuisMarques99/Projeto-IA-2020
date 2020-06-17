@@ -12,6 +12,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import utils.Utils;
 
 /**
@@ -37,18 +38,17 @@ public class MARK1 extends AdvancedRobot {
 
         obstacles = new ArrayList<>();
         inimigos = new HashMap<>();
-        conf = new UIConfiguration((int) getBattleFieldWidth(), (int) getBattleFieldHeight() , obstacles);
+        conf = new UIConfiguration((int) getBattleFieldWidth(), (int) getBattleFieldHeight(), obstacles);
 
-        while(true){
+        while (true) {
             this.setTurnRadarRight(360);
 
             //se se está a dirigir para algum ponto
-            if (points != null){
-                if (currentPoint >= 0)
-                {
+            if (points != null) {
+                if (currentPoint >= 0) {
                     IPoint ponto = points.get(currentPoint);
                     //se já está no ponto ou lá perto...
-                    if (Utils.getDistance(this, ponto.getX(), ponto.getY()) < 2){
+                    if (Utils.getDistance(this, ponto.getX(), ponto.getY()) < 2) {
                         currentPoint++;
                         //se chegou ao fim do caminho
                         if (currentPoint >= points.size())
@@ -70,18 +70,18 @@ public class MARK1 extends AdvancedRobot {
 
         points = new ArrayList<>();
         // chamada ao algoritmo genético
-        points = GeneticAlgorithm.markGeneticAlgorithm(3 , 2000 , 0.3 , conf);
+        points = GeneticAlgorithm.markGeneticAlgorithm(4, 2000, 0.05, conf);
         if (points != null) {
             System.out.println("> Moving to selected target!");
             currentPoint = 0;
-        }
-        else {
+        } else {
             System.out.println("> System could not find any available route...");
         }
     }
 
     /**
      * ******** TODO: Necessário selecionar a opção Paint na consola do Robot *******
+     *
      * @param g
      */
     @Override
@@ -91,10 +91,9 @@ public class MARK1 extends AdvancedRobot {
         g.setColor(Color.RED);
         obstacles.stream().forEach(x -> g.drawRect(x.x, x.y, (int) x.getWidth(), (int) x.getHeight()));
 
-        if (points != null)
-        {
-            for (int i=1;i<points.size();i++)
-                drawThickLine(g, points.get(i-1).getX(), points.get(i-1).getY(), points.get(i).getX(), points.get(i).getY(), 2, Color.green);
+        if (points != null) {
+            for (int i = 1; i < points.size(); i++)
+                drawThickLine(g, points.get(i - 1).getX(), points.get(i - 1).getY(), points.get(i).getX(), points.get(i).getY(), 2, Color.green);
         }
     }
 
@@ -105,10 +104,10 @@ public class MARK1 extends AdvancedRobot {
         //Nao é suposto este robot disparar a ninguem logo a chamada a Bullet nao é feita aqui ainda
         Point2D.Double ponto = getEnemyCoordinates(this, event.getBearing(), event.getDistance());
 
-        ponto.x -= this.getWidth()*2.5 / 2;
-        ponto.y -= this.getHeight()*2.5 / 2;
+        ponto.x -= this.getWidth() * 2.5 / 2;
+        ponto.y -= this.getHeight() * 2.5 / 2;
 
-        Rectangle rect = new Rectangle((int)ponto.x, (int)ponto.y, (int)(this.getWidth()*2.5), (int)(this.getHeight()*2.5));
+        Rectangle rect = new Rectangle((int) ponto.x, (int) ponto.y, (int) (this.getWidth() * 2.5), (int) (this.getHeight() * 2.5));
 
         if (inimigos.containsKey(event.getName())) //se já existe um retângulo deste inimigo
             obstacles.remove(inimigos.get(event.getName()));//remover da lista de retângulos
@@ -119,6 +118,7 @@ public class MARK1 extends AdvancedRobot {
 
     /**
      * Metodo responsavel por decidir o que fazer aquando a morte de um robot
+     *
      * @param event evento que determina que um robot morreu no campo de batalha
      */
     @Override
@@ -133,12 +133,12 @@ public class MARK1 extends AdvancedRobot {
     /**
      * Devolve as coordenadas de um alvo
      *
-     * @param robot o meu robot
-     * @param bearing ângulo para o alvo, em graus
+     * @param robot    o meu robot
+     * @param bearing  ângulo para o alvo, em graus
      * @param distance distância ao alvo
      * @return coordenadas do alvo
-     * */
-    public static Point2D.Double getEnemyCoordinates(Robot robot, double bearing, double distance){
+     */
+    public static Point2D.Double getEnemyCoordinates(Robot robot, double bearing, double distance) {
         double angle = Math.toRadians((robot.getHeading() + bearing) % 360);
 
         return new Point2D.Double((robot.getX() + Math.sin(angle) * distance), (robot.getY() + Math.cos(angle) * distance));
@@ -181,11 +181,10 @@ public class MARK1 extends AdvancedRobot {
      * Dirige o robot (AdvancedRobot) para determinadas coordenadas
      *
      * @param robot o meu robot
-     * @param x coordenada x do alvo
-     * @param y coordenada y do alvo
-     * */
-    public static void advancedRobotGoTo(AdvancedRobot robot, double x, double y)
-    {
+     * @param x     coordenada x do alvo
+     * @param y     coordenada y do alvo
+     */
+    public static void advancedRobotGoTo(AdvancedRobot robot, double x, double y) {
         x -= robot.getX();
         y -= robot.getY();
 
