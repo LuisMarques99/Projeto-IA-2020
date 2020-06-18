@@ -166,7 +166,7 @@ public class GeneticAlgorithm extends AdvancedRobot {
      * @return uma lista válida mutada se possivel. retorna a lista original se impossivel.
      */
     public static List<IPoint> mutateList(List<IPoint> list, double mutationRate, UIConfiguration configuration) {
-        double fit1 = getFitness(list, configuration);
+        double fit1;
         double fitnessInit = getFitness(list, configuration);
         double fitnessFinal = 0;
 
@@ -272,36 +272,36 @@ public class GeneticAlgorithm extends AdvancedRobot {
      */
     public static void reproducePopulation(ArrayList<List<IPoint>> pointsList, UIConfiguration conf) {
         Random rand = new Random();
-        int index = 0;
-        double score;
+        List<IPoint> tempList = new ArrayList<>(); //lista temporária com os valores do melhor caminho ate ao momento
 
-        while (index < pointsList.size() * 0.10) {
-            for (int a = 0; a < pointsList.size() - 1; a = a + 2) {
-                int point1 = rand.nextInt((pointsList.get(0).size() - 1) - 1) + 1;
-                int point2 = point1;
-
-                while (point2 == point1) {
-                    point2 = rand.nextInt((pointsList.get(0).size() - 1) - 1) + 1;
-                }
-                IPoint p1 = pointsList.get(a).get(point1);
-                IPoint p2 = pointsList.get(a).get(point2);
-
-                pointsList.get(a).set(point1, pointsList.get(a + 1).get(point1));
-                pointsList.get(a).set(point2, pointsList.get(a + 1).get(point2));
-                pointsList.get(a + 1).set(point1, p1);
-                pointsList.get(a + 1).set(point2, p2);
-            }
-
-            for (int b = 0; b < pointsList.size(); b++) {
-                score = getFitness(pointsList.get(b), conf);
-                if (score > getFitness(finalPointList, conf)) {
-                    finalPointList = pointsList.get(b);
-                }
-            }
-            Collections.shuffle(pointsList);
-            setGeneration(generation++);
-            index++;
+        //colocar os pontos do melhor caminho na lista temporária
+        for (int b = 0; b < finalPointList.size(); b++) {
+            tempList.add(finalPointList.get(b));
         }
+
+        for (int a = 0; a < pointsList.size(); a++) {
+            int point1 = rand.nextInt((pointsList.get(0).size() - 1) - 1) + 1;
+
+            IPoint p1 = pointsList.get(a).get(point1);
+            tempList.set(point1, p1);
+
+            if (getFitness(tempList, conf) > getFitness(finalPointList, conf)) {
+                //atualizar os pontos do melhor caminho
+                finalPointList.clear();
+                for (int b = 0; b < tempList.size(); b++) {
+                    finalPointList.add(tempList.get(b));
+                    setGeneration(generation++);
+                    System.out.println("Houve cruzamento");
+                }
+            } else {
+                //recolocar os pontos do melhor caminho na lista temporaria
+                tempList.clear();
+                for (int b = 0; b < finalPointList.size(); b++) {
+                    tempList.add(finalPointList.get(b));
+                }
+            }
+        }
+        System.out.println("Fitness final: " + getFitness(finalPointList, conf));
     }
 
     /**
