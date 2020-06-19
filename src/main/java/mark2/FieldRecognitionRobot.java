@@ -83,9 +83,9 @@ public class FieldRecognitionRobot extends AdvancedRobot {
         }
 
         public void setHit(int hit) {
-//            if (hit != 0 || hit != 1) {
-//                System.err.println("ERROR! The hit value must be 0 or 1!");
-//            }
+            if (hit != 0 || hit != 1) {
+                System.out.println("ERROR! The hit value must be 0 or 1!");
+            }
             this.hit = hit;
         }
 
@@ -112,16 +112,6 @@ public class FieldRecognitionRobot extends AdvancedRobot {
     @Override
     public void run() {
         super.run();
-
-//        // Writes file header
-//        dataList.add(new String[]{"Target Name", "Target Pos X", "Target Pos Y", "Target Velocity",
-//                "Power", "Distance", "Hit"});
-
-//        try {
-//            csvWriter = new CSVFileWriter("battleResults.csv");
-//        } catch (IOException e) {
-//            System.err.println(e.getMessage());
-//        }
 
         while (true) {
             setAhead(30);
@@ -210,11 +200,7 @@ public class FieldRecognitionRobot extends AdvancedRobot {
     @Override
     public void onBattleEnded(BattleEndedEvent event) {
         super.onBattleEnded(event);
-//        try {
-//            dataToCSV();
-//        } catch (IOException e) {
-//            System.err.println(e.getMessage());
-//        }
+
     }
 
     private void dataToCSV() throws IOException {
