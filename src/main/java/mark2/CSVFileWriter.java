@@ -1,4 +1,4 @@
-package mark_projects;
+package mark2;
 
 import java.io.File;
 import java.io.FileWriter;
