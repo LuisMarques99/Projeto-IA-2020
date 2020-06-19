@@ -291,7 +291,6 @@ public class GeneticAlgorithm extends AdvancedRobot {
                 for (int b = 0; b < tempList.size(); b++) {
                     finalPointList.add(tempList.get(b));
                     setGeneration(generation++);
-                    System.out.println("Houve cruzamento");
                 }
             } else {
                 //recolocar os pontos do melhor caminho na lista temporaria
@@ -301,7 +300,6 @@ public class GeneticAlgorithm extends AdvancedRobot {
                 }
             }
         }
-        System.out.println("Fitness final: " + getFitness(finalPointList, conf));
     }
 
     /**
