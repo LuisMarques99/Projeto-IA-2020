@@ -11,6 +11,7 @@ import java.util.List;
 public class FieldRecognitionRobot extends AdvancedRobot {
 
     private static class Data {
+        //informacoes a ser guardadas no dataset
         private String targetName;
         private double targetPosX;
         private double targetPosY;
@@ -19,6 +20,7 @@ public class FieldRecognitionRobot extends AdvancedRobot {
         private double distance;
         private int hit;
 
+        //construtor de Data
         public Data(String targetName, double targetPosX, double targetPosY, double targetVelocity, double power,
                     double distance) {
             this.targetName = targetName;
@@ -34,48 +36,24 @@ public class FieldRecognitionRobot extends AdvancedRobot {
             return targetName;
         }
 
-        public void setTargetName(String targetName) {
-            this.targetName = targetName;
-        }
-
         public double getTargetPosX() {
             return targetPosX;
-        }
-
-        public void setTargetPosX(double targetPosX) {
-            this.targetPosX = targetPosX;
         }
 
         public double getTargetPosY() {
             return targetPosY;
         }
 
-        public void setTargetPosY(double targetPosY) {
-            this.targetPosY = targetPosY;
-        }
-
         public double getTargetVelocity() {
             return targetVelocity;
-        }
-
-        public void setTargetVelocity(double targetVelocity) {
-            this.targetVelocity = targetVelocity;
         }
 
         public double getPower() {
             return power;
         }
 
-        public void setPower(double power) {
-            this.power = power;
-        }
-
         public double getDistance() {
             return distance;
-        }
-
-        public void setDistance(double distance) {
-            this.distance = distance;
         }
 
         public int getHit() {
@@ -104,9 +82,7 @@ public class FieldRecognitionRobot extends AdvancedRobot {
     }
 
     CSVFileWriter csvWriter;
-
     HashMap<Bullet, Data> bulletsMap = new HashMap<>();
-
     List<String[]> dataList = new ArrayList<>();
 
     @Override
@@ -126,13 +102,10 @@ public class FieldRecognitionRobot extends AdvancedRobot {
 
         Bullet bullet;
         if (event.getDistance() < 200) bullet = fireBullet(3);
-        else if (event.getDistance() < 500) bullet = fireBullet(2);
+        else if (event.getDistance() >= 200 && event.getDistance() < 700) bullet = fireBullet(2);
         else bullet = fireBullet(1);
 
-        if (bullet == null) System.out.println("Didn't fire!");
-        else {
-            System.out.println("Fired at " + event.getName());
-
+        if (bullet != null) {
             double targetPosX = Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance()).getX();
             double targetPosY = Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance()).getY();
             bulletsMap.put(bullet, new Data(event.getName(), targetPosX, targetPosY, event.getVelocity(),
@@ -200,13 +173,17 @@ public class FieldRecognitionRobot extends AdvancedRobot {
     @Override
     public void onBattleEnded(BattleEndedEvent event) {
         super.onBattleEnded(event);
-
     }
 
+    /**
+     * Funcao responsavel por escrever em ficheiro .csv os resultados da atividade do robot em batalho no Robocode
+     * Escreve em ficheiro, os resultados dos tiros efetuados aos inimigos e o seu sucesso ou insucesso em acertar
+     * nos mesmos.
+     *
+     * @throws IOException
+     */
     private void dataToCSV() throws IOException {
         csvWriter = new CSVFileWriter("battleResults.csv");
-//        csvWriter.writeLine(new String[]{"Target Name", "Target Pos X", "Target Pos Y", "Target Velocity",
-//                "Power", "Distance", "Hit"});
         csvWriter.writeAtOnce(dataList);
         csvWriter.close();
     }
