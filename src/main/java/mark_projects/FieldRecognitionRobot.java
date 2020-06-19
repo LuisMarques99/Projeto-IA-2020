@@ -1,4 +1,4 @@
-package mark2;
+package mark_projects;
 
 import robocode.*;
 import utils.Utils;

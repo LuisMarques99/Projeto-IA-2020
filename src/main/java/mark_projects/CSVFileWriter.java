@@ -1,10 +1,9 @@
-package mark2;
+package mark_projects;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.List;
 
 /**

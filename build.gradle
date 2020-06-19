@@ -36,6 +36,7 @@ dependencies {
 
     compile name: 'TP_IA_2020_Resources'
     compile name: 'robocode-1.9.3.9-setup'
+    compile group: 'ai.h2o', name: 'h2o-genmodel', version: '3.10.4.4'
 }
 
 application {
