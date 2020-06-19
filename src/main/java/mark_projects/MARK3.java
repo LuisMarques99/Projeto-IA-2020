@@ -114,7 +114,7 @@ public class MARK3 extends AdvancedRobot {
                     currentPoint = -1;
                     break;
                 } else if (obstacles.get(a).getBounds2D().contains(lastPoint.getX(), lastPoint.getY())) {
-                    if (event.getDistance() < 300){
+                    if (getDistanceRemaining() < 200){
                         points.clear();
                         currentPoint = -1;
                         break;
