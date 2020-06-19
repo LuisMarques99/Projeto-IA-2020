@@ -113,20 +113,17 @@ public class FieldRecognitionRobot extends AdvancedRobot {
     public void run() {
         super.run();
 
-        // Writes file header
-        dataList.add(new String[]{"Target Name", "Target Pos X", "Target Pos Y", "Target Velocity",
-                "Power", "Distance", "Hit"});
+//        // Writes file header
+//        dataList.add(new String[]{"Target Name", "Target Pos X", "Target Pos Y", "Target Velocity",
+//                "Power", "Distance", "Hit"});
 
-        try {
-            csvWriter = new CSVFileWriter("battleResults.csv");
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
+//        try {
+//            csvWriter = new CSVFileWriter("battleResults.csv");
+//        } catch (IOException e) {
+//            System.err.println(e.getMessage());
+//        }
 
         while (true) {
-//            setTurnRadarRight(360);
-//            turnGunRight(360);
-//            turnGunRightRadians(Double.POSITIVE_INFINITY);
             setAhead(30);
             setTurnRight(20);
             execute();
@@ -203,19 +200,28 @@ public class FieldRecognitionRobot extends AdvancedRobot {
     @Override
     public void onRoundEnded(RoundEndedEvent event) {
         super.onRoundEnded(event);
-        dataList.add(new String[]{"Ronda: ", String.valueOf(event.getRound() + 1)});
-        System.out.println(dataList.toString());
+        try {
+            dataToCSV();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     @Override
     public void onBattleEnded(BattleEndedEvent event) {
         super.onBattleEnded(event);
-        System.out.println(dataList.toString());
-        try {
-            csvWriter.writeAtOnce(dataList);
-            csvWriter.close();
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
+//        try {
+//            dataToCSV();
+//        } catch (IOException e) {
+//            System.err.println(e.getMessage());
+//        }
+    }
+
+    private void dataToCSV() throws IOException {
+        csvWriter = new CSVFileWriter("battleResults.csv");
+//        csvWriter.writeLine(new String[]{"Target Name", "Target Pos X", "Target Pos Y", "Target Velocity",
+//                "Power", "Distance", "Hit"});
+        csvWriter.writeAtOnce(dataList);
+        csvWriter.close();
     }
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public class CSVFileWriter {
     /**
      * String reference to the output folder of the files created
      */
-    private final String OUTPUT_FOLDER = "output_files";
+    private final String OUTPUT_FOLDER = "robot_champ_project";
 
     /**
      * File reference to the file
@@ -46,7 +47,7 @@ public class CSVFileWriter {
             else throw new IOException("Failed to create directory '" + folder + "'");
         }
 
-        this.writer = new FileWriter(file);
+        this.writer = new FileWriter(file, true);
     }
 
     /**
@@ -69,6 +70,15 @@ public class CSVFileWriter {
         writer.append(data[0]);
         for (int i = 1; i < data.length; i++) writer.append(",").append(data[i]);
         writer.append("\n");
+    }
+
+    /**
+     * Flushes the file writer
+     *
+     * @throws IOException IO Exception
+     */
+    public void flush() throws IOException {
+        writer.flush();
     }
 
     /**
