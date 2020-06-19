@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Class that represents the structure of a {@link CSVFileWriter CSV File Writer}
+ *
  * @author Luis Marques
  */
 public class CSVFileWriter {
@@ -27,6 +29,7 @@ public class CSVFileWriter {
 
     /**
      * Creates an instance of a {@link CSVFileWriter CSV File Writer} with a filepath
+     *
      * @param filename String name of the file to write the csv (it must be a .csv file)
      * @throws IOException IO Exception
      */
@@ -47,7 +50,18 @@ public class CSVFileWriter {
     }
 
     /**
+     * Writes a list of string arrays in the csv file
+     *
+     * @param list List of string arrays
+     * @throws IOException IO Exception
+     */
+    public void writeAtOnce(List<String[]> list) throws IOException {
+        for (String[] stringArray : list) writeLine(stringArray);
+    }
+
+    /**
      * Writes a line into the file created
+     *
      * @param data String array of the data to write in the line
      * @throws IOException IO Exception
      */
@@ -59,6 +73,7 @@ public class CSVFileWriter {
 
     /**
      * Closes the file writer
+     *
      * @throws IOException IO Exception
      */
     public void close() throws IOException {
