@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Classe a ser utilizada para a geracao de um dataset para treino de um modelo a ser aplicado posteriormente
+ * no robot MARK2.
+ */
 public class FieldRecognitionRobot extends AdvancedRobot {
 
     private static class Data {
