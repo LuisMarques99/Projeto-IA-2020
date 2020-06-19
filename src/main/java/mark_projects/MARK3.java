@@ -1,5 +1,7 @@
 package mark_projects;
 
+import hex.genmodel.MojoModel;
+import hex.genmodel.easy.EasyPredictModelWrapper;
 import impl.Point;
 import impl.UIConfiguration;
 import interf.IPoint;
@@ -13,6 +15,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +39,18 @@ public class MARK3 extends AdvancedRobot {
     //variável que contém o ponto atual para o qual o robot se está a dirigir
     private int currentPoint = -1;
 
+    private EasyPredictModelWrapper model;
+
     @Override
     public void run() {
         super.run();
+
+        try {
+            model = new EasyPredictModelWrapper(MojoModel.load(Paths.get(System.getProperty("user.dir"),
+                    "h2o_models", "deeplearning_300_200_battle_results.zip").toString()));
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
 
         obstacles = new ArrayList<>();
         inimigos = new HashMap<>();
@@ -114,13 +127,14 @@ public class MARK3 extends AdvancedRobot {
                     currentPoint = -1;
                     break;
                 } else if (obstacles.get(a).getBounds2D().contains(lastPoint.getX(), lastPoint.getY())) {
-                    if (getDistanceRemaining() < 200){
+                    if (getDistanceRemaining() < 200) {
                         points.clear();
                         currentPoint = -1;
                         break;
                     }
                 } else {
-                    conf.setStart(new impl.Point((int) this.getX(), (int) this.getY()));;
+                    conf.setStart(new impl.Point((int) this.getX(), (int) this.getY()));
+                    ;
                     points = new ArrayList<>();
                     points = GeneticAlgorithm.markGeneticAlgorithm(4, 2000, 0.05, conf);
                 }
