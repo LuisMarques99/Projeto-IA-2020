@@ -5,18 +5,11 @@ import hex.genmodel.easy.EasyPredictModelWrapper;
 import hex.genmodel.easy.RowData;
 import hex.genmodel.easy.exception.PredictException;
 import hex.genmodel.easy.prediction.MultinomialModelPrediction;
-import impl.UIConfiguration;
-import interf.IPoint;
 import performance.EvaluateFire;
 import robocode.*;
 import utils.Utils;
 
-import java.awt.*;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Esta é a classe onde se irá desenvolver o robot com a capacidade de disparo autonomo
@@ -53,8 +46,8 @@ public class MARK2 extends AdvancedRobot {
 //        conf = new UIConfiguration((int) getBattleFieldWidth(), (int) getBattleFieldHeight(), obstacles);
 
         while (true) {
-            setAhead(20);
-            setTurnRight(10);
+            setAhead(10);
+            setTurnRight(5);
             execute();
         }
     }
@@ -92,15 +85,35 @@ public class MARK2 extends AdvancedRobot {
                     hitValue = i;
                 }
             }
+//            if (event.getName().equals("sample.Walls")) {
+//                if (event.getDistance() < 200) fireBullet(3);
+//                else if (event.getDistance() < 700) fireBullet(2);
+//                else fireBullet(1);
+//            }
             if (label.equals(event.getName()) && hitValue == 1.0 && probability > 0.75) {
-                Bullet bullet;
-                if (event.getDistance() < 200) bullet = fireBullet(3);
-                else if (event.getDistance() < 700) bullet = fireBullet(2);
-                else bullet = fireBullet(1);
+                if (event.getDistance() < 200) fireBullet(3);
+                else if (event.getDistance() < 700) fireBullet(2);
+                else fireBullet(1);
             }
         } catch (PredictException e) {
             System.err.println(e.toString());
         }
+
+        evaluateFire.addScanned(event);
+    }
+
+    @Override
+    public void onHitRobot(HitRobotEvent event) {
+        super.onHitRobot(event);
+
+        setBack(100);
+    }
+
+    @Override
+    public void onHitWall(HitWallEvent event) {
+        super.onHitWall(event);
+
+        setBack(100);
     }
 
     @Override
@@ -114,6 +127,6 @@ public class MARK2 extends AdvancedRobot {
     public void onBattleEnded(BattleEndedEvent event) {
         super.onBattleEnded(event);
 
-        evaluateFire.submit(event.getResults());
+        System.out.println(evaluateFire.submit(event.getResults()));
     }
 }
