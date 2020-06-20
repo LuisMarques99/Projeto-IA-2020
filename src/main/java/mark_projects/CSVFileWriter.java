@@ -33,12 +33,12 @@ public class CSVFileWriter {
      * @param filename String name of the file to write the csv (it must be a .csv file)
      * @throws IOException IO Exception
      */
-    public CSVFileWriter(String filename) throws IOException {
+    public CSVFileWriter(String filename, String[] header) throws IOException {
         String folderPath = Paths.get(System.getProperty("user.dir"), OUTPUT_FOLDER).toString();
         String filepath = Paths.get(folderPath, filename).toString();
 
         File folder = new File(folderPath);
-        this.file = new File(filepath);
+        file = new File(filepath);
 
         if (folder.exists()) file.createNewFile();
         else {
@@ -46,7 +46,8 @@ public class CSVFileWriter {
             else throw new IOException("Failed to create directory '" + folder + "'");
         }
 
-        this.writer = new FileWriter(file, true);
+        writer = new FileWriter(file, true);
+        writeLine(header);
     }
 
     /**
@@ -69,15 +70,6 @@ public class CSVFileWriter {
         writer.append(data[0]);
         for (int i = 1; i < data.length; i++) writer.append(",").append(data[i]);
         writer.append("\n");
-    }
-
-    /**
-     * Flushes the file writer
-     *
-     * @throws IOException IO Exception
-     */
-    public void flush() throws IOException {
-        writer.flush();
     }
 
     /**

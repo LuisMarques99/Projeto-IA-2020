@@ -9,84 +9,189 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Classe a ser utilizada para a geracao de um dataset para treino de um modelo a ser aplicado posteriormente
- * no robot MARK2.
+ * Classe que representa a estrutura de um {@link FieldRecognitionRobot Field Recognition Robot} a ser utilizada para a
+ * geracao de um dataset para treino de um modelo a ser aplicado posteriormente no robot {@link MARK2 Mark2}
  */
 public class FieldRecognitionRobot extends AdvancedRobot {
 
+    /**
+     * Classe interna que representa a estrutura de um conjunto de {@link Data Dados} utilizado no
+     * {@link FieldRecognitionRobot Field Recognition Robot}
+     */
     private static class Data {
         //informacoes a ser guardadas no dataset
-        private String targetName;
-        private double targetPosX;
-        private double targetPosY;
-        private double targetVelocity;
-        private double power;
-        private double distance;
+        /**
+         * referencia String para o nome do robot alvo
+         */
+        private final String targetName;
+
+        /**
+         * referencia double para coordenada X da posicao do robot alvo
+         */
+        private final double targetPosX;
+
+        /**
+         * referencia double para coordenada Y da posicao do robot alvo
+         */
+        private final double targetPosY;
+
+        /**
+         * referencia double para a direcao em que o robot alvo está a apontar
+         */
+        private final double targetHeading;
+
+        /**
+         * referencia souble para a velocidade do robot alvo
+         */
+        private final double targetVelocity;
+
+        /**
+         * referencia double para a potencia da bala disparada
+         */
+        private final double power;
+
+        /**
+         * referencia double para a distancia a que se encontra o robot alvo
+         */
+        private final double distance;
+
+        /**
+         * referencia int com intenção booleana para definir se a bala atingiu o robot alvo (1 - true; 0 - false)
+         */
         private int hit;
 
-        //construtor de Data
-        public Data(String targetName, double targetPosX, double targetPosY, double targetVelocity, double power,
-                    double distance) {
+        /**
+         * Cria uma instancia de {@link Data Data} com o volor de hit sendo 0 por defeito
+         *
+         * @param targetName     String nome do robot alvo
+         * @param targetPosX     double coordenada X da posicao do robot alvo
+         * @param targetPosY     double coordenada Y da posicao do robot alvo
+         * @param targetHeading  double direcao em que o robot alvo está a apontar
+         * @param targetVelocity double velocidade do robot alvo
+         * @param power          double potencia da bala disparada
+         * @param distance       double distancia a que se encontra o robot alvo
+         */
+        public Data(String targetName, double targetPosX, double targetPosY, double targetHeading,
+                    double targetVelocity, double power, double distance) {
             this.targetName = targetName;
             this.targetPosX = targetPosX;
             this.targetPosY = targetPosY;
+            this.targetHeading = targetHeading;
             this.targetVelocity = targetVelocity;
             this.power = power;
             this.distance = distance;
             hit = 0;
         }
 
+        /**
+         * Retorna o nome do robot alvo
+         *
+         * @return String nome do robot alvo
+         */
         public String getTargetName() {
             return targetName;
         }
 
+        /**
+         * Retorna a coordenada X da posicao do robot alvo
+         *
+         * @return double coordenada X da posicao do robot alvo
+         */
         public double getTargetPosX() {
             return targetPosX;
         }
 
+        /**
+         * Retorna a coordenada Y da posicao do robot alvo
+         *
+         * @return double coordenada Y da posicao do robot alvo
+         */
         public double getTargetPosY() {
             return targetPosY;
         }
 
+        /**
+         * Retorna a direcao em que o robot alvo está a apontar
+         *
+         * @return double direcao em que o robot alvo está a apontar
+         */
+        public double getTargetHeading() {
+            return targetHeading;
+        }
+
+        /**
+         * Retorna a velocidade do robot alvo
+         *
+         * @return double velocidade do robot alvo
+         */
         public double getTargetVelocity() {
             return targetVelocity;
         }
 
+        /**
+         * Retorna a potencia da bala disparada
+         *
+         * @return double potencia da bala disparada
+         */
         public double getPower() {
             return power;
         }
 
+        /**
+         * Retorna a distancia a que se encontra o robot alvo
+         *
+         * @return double distancia a que se encontra o robot alvo
+         */
         public double getDistance() {
             return distance;
         }
 
+        /**
+         * Retorna 1 se a bala atingiu o robot alvo ou 0 se a bala não tiver atingido
+         *
+         * @return int 1 se a bala atingiu o robot alvo ou 0 caso contrario
+         */
         public int getHit() {
             return hit;
         }
 
+        /**
+         * Define se a bala atingiu o robot alvo (1) ou não (0)
+         *
+         * @param hit int 1 se a bala atingiu o robot alvo ou 0 caso contrario
+         */
         public void setHit(int hit) {
-            if (hit != 0 || hit != 1) {
+            if (hit != 0 && hit != 1) {
                 System.out.println("ERROR! The hit value must be 0 or 1!");
             }
             this.hit = hit;
         }
 
-        @Override
-        public String toString() {
-            return "Data{" +
-                    "targetName='" + targetName + '\'' +
-                    ", targetPosX=" + targetPosX +
-                    ", targetPosY=" + targetPosY +
-                    ", targetVelocity=" + targetVelocity +
-                    ", power=" + power +
-                    ", distance=" + distance +
-                    ", hit=" + hit +
-                    '}';
+        /**
+         * Retorna um array de strings com os atributos da classe {@link Data Data}
+         *
+         * @return String[] atributos da classe
+         */
+        public static String[] getAttributes() {
+            return new String[]{"Target Name", "Target Pos X", "Target Pos Y", "Target Heading", "Target Velocity",
+                    "Power", "Distance", "Hit"};
         }
     }
 
+    /**
+     * referencia CSVFileWriter para o ficheiro utilizado para exportar o dataset gerado
+     */
     CSVFileWriter csvWriter;
+
+    /**
+     * referencia HashMap<Bullet, Data> para guardar os eventos do tipo {@link Bullet Bullet} com dados do tipo
+     * {@link Data Data}
+     */
     HashMap<Bullet, Data> bulletsMap = new HashMap<>();
+
+    /**
+     * referencia List<String[]> lista de arrays de strings para guardar os dados a serem exportados para o dataset
+     */
     List<String[]> dataList = new ArrayList<>();
 
     @Override
@@ -112,8 +217,8 @@ public class FieldRecognitionRobot extends AdvancedRobot {
         if (bullet != null) {
             double targetPosX = Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance()).getX();
             double targetPosY = Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance()).getY();
-            bulletsMap.put(bullet, new Data(event.getName(), targetPosX, targetPosY, event.getVelocity(),
-                    bullet.getPower(), event.getDistance()));
+            bulletsMap.put(bullet, new Data(event.getName(), targetPosX, targetPosY, event.getHeading(),
+                    event.getVelocity(), bullet.getPower(), event.getDistance()));
         }
     }
 
@@ -127,9 +232,9 @@ public class FieldRecognitionRobot extends AdvancedRobot {
         else data.setHit(0);
 
         dataList.add(new String[]{data.getTargetName(), String.valueOf(data.getTargetPosX()),
-                String.valueOf(data.getTargetPosY()), String.valueOf(data.getTargetVelocity()),
-                String.valueOf(data.getPower()), String.valueOf(data.getDistance()),
-                String.valueOf(data.getHit())});
+                String.valueOf(data.getTargetPosY()), String.valueOf(data.getTargetHeading()),
+                String.valueOf(data.getTargetVelocity()), String.valueOf(data.getPower()),
+                String.valueOf(data.getDistance()), String.valueOf(data.getHit())});
 
         bulletsMap.remove(event.getBullet());
     }
@@ -142,9 +247,9 @@ public class FieldRecognitionRobot extends AdvancedRobot {
         data.setHit(0);
 
         dataList.add(new String[]{data.getTargetName(), String.valueOf(data.getTargetPosX()),
-                String.valueOf(data.getTargetPosY()), String.valueOf(data.getTargetVelocity()),
-                String.valueOf(data.getPower()), String.valueOf(data.getDistance()),
-                String.valueOf(data.getHit())});
+                String.valueOf(data.getTargetPosY()), String.valueOf(data.getTargetHeading()),
+                String.valueOf(data.getTargetVelocity()), String.valueOf(data.getPower()),
+                String.valueOf(data.getDistance()), String.valueOf(data.getHit())});
 
         bulletsMap.remove(event.getBullet());
     }
@@ -157,9 +262,9 @@ public class FieldRecognitionRobot extends AdvancedRobot {
         data.setHit(0);
 
         dataList.add(new String[]{data.getTargetName(), String.valueOf(data.getTargetPosX()),
-                String.valueOf(data.getTargetPosY()), String.valueOf(data.getTargetVelocity()),
-                String.valueOf(data.getPower()), String.valueOf(data.getDistance()),
-                String.valueOf(data.getHit())});
+                String.valueOf(data.getTargetPosY()), String.valueOf(data.getTargetHeading()),
+                String.valueOf(data.getTargetVelocity()), String.valueOf(data.getPower()),
+                String.valueOf(data.getDistance()), String.valueOf(data.getHit())});
 
         bulletsMap.remove(event.getBullet());
     }
@@ -187,7 +292,7 @@ public class FieldRecognitionRobot extends AdvancedRobot {
      * @throws IOException
      */
     private void dataToCSV() throws IOException {
-        csvWriter = new CSVFileWriter("battleResults.csv");
+        csvWriter = new CSVFileWriter("battleResults.csv", Data.getAttributes());
         csvWriter.writeAtOnce(dataList);
         csvWriter.close();
     }
