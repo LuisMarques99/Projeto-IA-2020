@@ -2,20 +2,21 @@ package mark_projects;
 
 import hex.genmodel.MojoModel;
 import hex.genmodel.easy.EasyPredictModelWrapper;
+import hex.genmodel.easy.RowData;
+import hex.genmodel.easy.exception.PredictException;
+import hex.genmodel.easy.prediction.MultinomialModelPrediction;
 import impl.Point;
 import impl.UIConfiguration;
 import interf.IPoint;
-import robocode.AdvancedRobot;
+import performance.EvaluateFire;
+import robocode.*;
 import robocode.Robot;
-import robocode.RobotDeathEvent;
-import robocode.ScannedRobotEvent;
 import utils.Utils;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,25 +39,30 @@ public class MARK3 extends AdvancedRobot {
     //variável que contém o ponto atual para o qual o robot se está a dirigir
     private int currentPoint = -1;
 
-    private EasyPredictModelWrapper model;
+    private final String NAME = "C´mon Champ! It´s warmup time.";
+    private EvaluateFire evaluateFire;
+    private MojoModel model;
+    private EasyPredictModelWrapper predictorModel;
 
     @Override
     public void run() {
         super.run();
 
         try {
-            model = new EasyPredictModelWrapper(MojoModel.load(Paths.get(System.getProperty("user.dir"),
-                    "h2o_models", "deeplearning_300_200_battle_results.zip").toString()));
+            model = MojoModel.load("C:/Users/luismarques99/OneDrive/MyProjects/ESTG/IA/ProjetoIA2020/h2o/models/drf_100_50_10fold_battle_results.zip");
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
+
+        predictorModel = new EasyPredictModelWrapper(model);
+        evaluateFire = new EvaluateFire(NAME);
 
         obstacles = new ArrayList<>();
         inimigos = new HashMap<>();
         conf = new UIConfiguration((int) getBattleFieldWidth(), (int) getBattleFieldHeight(), obstacles);
 
         while (true) {
-            this.setTurnRadarRight(360);
+            this.setTurnGunRight(360);
 
             //se se está a dirigir para algum ponto
             if (points != null) {
@@ -135,7 +141,7 @@ public class MARK3 extends AdvancedRobot {
                     conf.setStart(new impl.Point((int) this.getX(), (int) this.getY()));
                     ;
                     points = new ArrayList<>();
-                    points = GeneticAlgorithm.markGeneticAlgorithm(4, 2000, 0.05, conf);
+                    points = GeneticAlgorithm.markGeneticAlgorithm(4, 1000, 0.05, conf);
                 }
             }
         }
@@ -152,6 +158,43 @@ public class MARK3 extends AdvancedRobot {
 
         obstacles.add(rect);
         inimigos.put(event.getName(), rect);
+
+        double targetPosX = Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance()).getX();
+        double targetPosY = Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance()).getY();
+
+        RowData rowData = new RowData();
+        rowData.put("Target Pos X", targetPosX);
+        rowData.put("Target Pos Y", targetPosY);
+        rowData.put("Target Heading", event.getHeading());
+        rowData.put("Target Velocity", event.getVelocity());
+        rowData.put("Distance", event.getDistance());
+
+        if (event.getDistance() < 200) rowData.put("Power", 3.0);
+        else if (event.getDistance() < 700) rowData.put("Power", 2.0);
+        else rowData.put("Power", 1.0);
+
+        MultinomialModelPrediction prediction;
+        String label = "";
+        double probability = 0;
+        double hitValue = 0;
+        try {
+            for (int i = 0; i < 2; i++) {
+                rowData.put("Hit", (double) i);
+                prediction = predictorModel.predictMultinomial(rowData);
+                label = prediction.label;
+                if (prediction.classProbabilities[prediction.labelIndex] > probability) {
+                    probability = prediction.classProbabilities[prediction.labelIndex];
+                    hitValue = i;
+                }
+            }
+            if (label.equals(event.getName()) && hitValue == 1.0 && probability > 0.75) {
+                if (event.getDistance() < 200)  fireBullet(3);
+                else if (event.getDistance() < 700)  fireBullet(2);
+                else fireBullet(1);
+            }
+        } catch (PredictException e) {
+            System.err.println(e.toString());
+        }
     }
 
     /**
@@ -236,5 +279,17 @@ public class MARK3 extends AdvancedRobot {
         else
             robot.setBack(distance);
         robot.execute();
+    }
+
+    @Override
+    public void onBulletHit(BulletHitEvent event) {
+        super.onBulletHit(event);
+        evaluateFire.addHit(event);
+    }
+
+    @Override
+    public void onBattleEnded(BattleEndedEvent event) {
+        super.onBattleEnded(event);
+        evaluateFire.submit(event.getResults());
     }
 }

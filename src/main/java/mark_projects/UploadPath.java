@@ -13,7 +13,7 @@ public class UploadPath {
     public static IUIConfiguration conf;
 
     public static void main(String[] args) {
-        int mapID = 10; //mudar aqui!
+        int mapID = 3; //mudar aqui!
         int numberOfPaths = 4; //mudar aqui!
 
         try {
@@ -22,7 +22,7 @@ public class UploadPath {
             System.err.println(e.getMessage());
         }
         List<IPoint> points;
-        points = GeneticAlgorithm.markGeneticAlgorithm(4, numberOfPaths, 0.05, (UIConfiguration) conf);
+        points = GeneticAlgorithm.markGeneticAlgorithm(5, numberOfPaths, 0.05, (UIConfiguration) conf);
 
         Evaluate eval = new Evaluate(numberOfPaths, mapID, "C´mon Champ! It´s warmup time.");
         eval.addSolution(points, GeneticAlgorithm.getGeneration());
