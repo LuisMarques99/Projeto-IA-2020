@@ -1,19 +1,15 @@
-package samples;
+package mark_projects;
 
 import impl.UIConfiguration;
 import interf.IPoint;
 import interf.IUIConfiguration;
 import maps.Maps;
-import mark_projects.GeneticAlgorithm;
 import performance.Evaluate;
 import viewer.PathViewer;
 
 import java.util.List;
 
-/**
- * Exemplo que mostra como desenhar um caminho no visualizador.
- */
-public class PathDrawingSample {
+public class UploadPath {
     public static IUIConfiguration conf;
 
     public static void main(String[] args) {
