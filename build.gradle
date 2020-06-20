@@ -36,11 +36,14 @@ dependencies {
 
     compile name: 'TP_IA_2020_Resources'
     compile name: 'robocode-1.9.3.9-setup'
+    compile name: 'h2o-genmodel-3.30.0.5'
+    compile name: 'h2o-logger-3.30.0.5'
+    compile name: 'h2o-tree-api-0.3.9'
 }
 
 application {
     // Define the main class for the application.
-    mainClassName = 'RobotChampProject.App'
+    mainClassName = 'mark_projects.App'
 }
 
 test {
