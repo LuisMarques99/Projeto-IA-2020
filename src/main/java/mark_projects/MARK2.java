@@ -21,18 +21,12 @@ public class MARK2 extends AdvancedRobot {
     private EvaluateFire evaluateFire;
     private MojoModel model;
     private EasyPredictModelWrapper predictorModel;
-//    private java.util.List<Rectangle> obstacles;
-//    public static UIConfiguration conf;
-//    private HashMap<String, Rectangle> enemies;
-    //utilizada par associar inimigos a retângulos e permitir remover retângulos de inimigos já desatualizados
 
 
     @Override
     public void run() {
         super.run();
         try {
-//            model = MojoModel.load(Paths.get(System.getProperty("user.dir"), "h2o",
-//                    "models", "drf_100_50_10fold_battle_results.zip").toString());
             model = MojoModel.load("C:/Users/luismarques99/OneDrive/MyProjects/ESTG/IA/ProjetoIA2020/h2o/models/drf_100_50_10fold_battle_results.zip");
         } catch (IOException e) {
             System.err.println(e.getMessage());
@@ -41,9 +35,6 @@ public class MARK2 extends AdvancedRobot {
         predictorModel = new EasyPredictModelWrapper(model);
 
         evaluateFire = new EvaluateFire(NAME);
-//        obstacles = new ArrayList<>();
-//        enemies = new HashMap<>();
-//        conf = new UIConfiguration((int) getBattleFieldWidth(), (int) getBattleFieldHeight(), obstacles);
 
         while (true) {
             setAhead(10);
@@ -60,7 +51,6 @@ public class MARK2 extends AdvancedRobot {
         double targetPosY = Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance()).getY();
 
         RowData rowData = new RowData();
-//        rowData.put("Target Name", event.getName());
         rowData.put("Target Pos X", targetPosX);
         rowData.put("Target Pos Y", targetPosY);
         rowData.put("Target Heading", event.getHeading());
@@ -85,11 +75,6 @@ public class MARK2 extends AdvancedRobot {
                     hitValue = i;
                 }
             }
-//            if (event.getName().equals("sample.Walls")) {
-//                if (event.getDistance() < 200) fireBullet(3);
-//                else if (event.getDistance() < 700) fireBullet(2);
-//                else fireBullet(1);
-//            }
             if (label.equals(event.getName()) && hitValue == 1.0 && probability > 0.75) {
                 if (event.getDistance() < 200) fireBullet(3);
                 else if (event.getDistance() < 700) fireBullet(2);
