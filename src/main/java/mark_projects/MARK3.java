@@ -121,31 +121,6 @@ public class MARK3 extends AdvancedRobot {
     @Override
     public void onScannedRobot(ScannedRobotEvent event) {
         super.onScannedRobot(event);
-
-        //determinar se um robot atravessou o caminho que estamos a percorrer e o que fazer nessa situacao
-        if (points != null && GeneticAlgorithm.collisionDetection(points, conf)) {
-            IPoint lastPoint = points.get(points.size() - 1);
-
-            for (int a = 0; a < obstacles.size(); a++) {
-                if (event.getDistance() < 80) {
-                    points.clear();
-                    currentPoint = -1;
-                    break;
-                } else if (obstacles.get(a).getBounds2D().contains(lastPoint.getX(), lastPoint.getY())) {
-                    if (getDistanceRemaining() < 200) {
-                        points.clear();
-                        currentPoint = -1;
-                        break;
-                    }
-                } else {
-                    conf.setStart(new impl.Point((int) this.getX(), (int) this.getY()));
-                    ;
-                    points = new ArrayList<>();
-                    points = GeneticAlgorithm.markGeneticAlgorithm(4, 1000, 0.05, conf);
-                }
-            }
-        }
-
         Point2D.Double ponto = getEnemyCoordinates(this, event.getBearing(), event.getDistance());
 
         ponto.x -= this.getWidth() * 2.5 / 2;
