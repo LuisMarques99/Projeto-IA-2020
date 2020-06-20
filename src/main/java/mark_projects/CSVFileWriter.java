@@ -28,9 +28,15 @@ public class CSVFileWriter {
     private FileWriter writer;
 
     /**
+     * boolean reference to define if the file was already created or not
+     */
+    private boolean newFile = false;
+    
+    /**
      * Creates an instance of a {@link CSVFileWriter CSV File Writer} with a filepath
      *
      * @param filename String name of the file to write the csv (it must be a .csv file)
+     * @param header   String[] array of strings to write the header of the csv file
      * @throws IOException IO Exception
      */
     public CSVFileWriter(String filename, String[] header) throws IOException {
@@ -40,6 +46,8 @@ public class CSVFileWriter {
         File folder = new File(folderPath);
         file = new File(filepath);
 
+        if (!file.exists()) newFile = true;
+
         if (folder.exists()) file.createNewFile();
         else {
             if (folder.mkdir()) file.createNewFile();
@@ -47,7 +55,8 @@ public class CSVFileWriter {
         }
 
         writer = new FileWriter(file, true);
-        writeLine(header);
+
+        if (newFile) writeLine(header);
     }
 
     /**
