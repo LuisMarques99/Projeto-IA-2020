@@ -28,20 +28,51 @@ import java.util.List;
  * real no Robocode
  */
 public class MARK3 extends AdvancedRobot {
-    /*
-     * lista de obstáculos, preenchida ao fazer scan
-     * */
-    private java.util.List<Rectangle> obstacles;
-    public static UIConfiguration conf;
-    private List<IPoint> points;
-    private HashMap<String, Rectangle> inimigos; //utilizada par associar inimigos a retângulos e permitir remover retângulos de inimigos já desatualizados
+    /**
+     * referencia List<Rectangle> para uma lista de obstáculos, preenchida ao fazer scan
+     */
+    private List<Rectangle> obstacles;
 
-    //variável que contém o ponto atual para o qual o robot se está a dirigir
+    /**
+     * referencia static UIConfiguration para a configuração inicial do mapa
+     */
+    public static UIConfiguration conf;
+
+    /**
+     * referencia List<IPoint> para uma lista de pontos do caminho
+     */
+    private List<IPoint> points;
+
+    /**
+     * referencia HashMap<String, Rectangle> para guardar dados do tipo String com dados do tipo Rectangle para
+     * a lista de inimigos
+     */
+    private HashMap<String, Rectangle> inimigos;
+    //utilizada par associar inimigos a retângulos e permitir remover retângulos de inimigos já desatualizados
+
+    /**
+     * referencia int para o ponto atual para o qual o robot se está a dirigir
+     */
     private int currentPoint = -1;
 
+    /**
+     * referencia String para o nome da nosso robot
+     */
     private final String NAME = "C´mon Champ! It´s warmup time.";
+
+    /**
+     * referencia EvaluateFire para o gestor de envio dos dados para as tabelas de classificação
+     */
     private EvaluateFire evaluateFire;
+
+    /**
+     * referencia MojoModel para o modelo utilizado
+     */
     private MojoModel model;
+
+    /**
+     * referencia EasyPredictModelWrapper para o gestor de previsões do modelo
+     */
     private EasyPredictModelWrapper predictorModel;
 
     @Override
@@ -91,7 +122,7 @@ public class MARK3 extends AdvancedRobot {
 
         points = new ArrayList<>();
         // chamada ao algoritmo genético
-        points = GeneticAlgorithm.markGeneticAlgorithm(4, 2000, 0.05, conf);
+        points = GeneticAlgorithm.markGeneticAlgorithm(3, 100, 0.10, conf);
         if (points != null) {
             System.out.println("> Moving to selected target!");
             currentPoint = 0;
@@ -164,9 +195,14 @@ public class MARK3 extends AdvancedRobot {
                     hitValue = i;
                 }
             }
-            if (label.equals(event.getName()) && hitValue == 1.0 && probability > 0.75) {
-                if (event.getDistance() < 200) fireBullet(3);
-                else if (event.getDistance() < 700) fireBullet(2);
+            if (event.getName().equals("sample.Walls") && event.getVelocity() == 0.0) {
+                if (getEnergy() > 40 && event.getDistance() < 200) fireBullet(3);
+                else if (getEnergy() > 20 && event.getDistance() < 700) fireBullet(2);
+                else fireBullet(1);
+            }
+            if (label.equals(event.getName()) && hitValue == 1.0 && probability > 0.7) {
+                if (getEnergy() > 40 && event.getDistance() < 200) fireBullet(3);
+                else if (getEnergy() > 20 && event.getDistance() < 700) fireBullet(2);
                 else fireBullet(1);
             }
         } catch (PredictException e) {
