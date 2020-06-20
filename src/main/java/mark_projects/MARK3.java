@@ -159,6 +159,8 @@ public class MARK3 extends AdvancedRobot {
         obstacles.add(rect);
         inimigos.put(event.getName(), rect);
 
+
+        // Mark 2
         double targetPosX = Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance()).getX();
         double targetPosY = Utils.getEnemyCoordinates(this, event.getBearing(), event.getDistance()).getY();
 
@@ -188,13 +190,15 @@ public class MARK3 extends AdvancedRobot {
                 }
             }
             if (label.equals(event.getName()) && hitValue == 1.0 && probability > 0.75) {
-                if (event.getDistance() < 200)  fireBullet(3);
-                else if (event.getDistance() < 700)  fireBullet(2);
+                if (event.getDistance() < 200) fireBullet(3);
+                else if (event.getDistance() < 700) fireBullet(2);
                 else fireBullet(1);
             }
         } catch (PredictException e) {
             System.err.println(e.toString());
         }
+
+        evaluateFire.addScanned(event);
     }
 
     /**
