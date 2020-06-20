@@ -12,16 +12,30 @@ import utils.Utils;
 import java.io.IOException;
 
 /**
- * Esta é a classe onde se irá desenvolver o robot com a capacidade de disparo autonomo
+ * Classe que representa a estrutura do robot com a caacidade de disparo autonomo {@link MARK2 Mark2}.
  * Implementacao do codigo com base em machine learning e utilizacao do H2O
  */
 public class MARK2 extends AdvancedRobot {
 
+    /**
+     * referencia String para o nome da nosso robot
+     */
     private final String NAME = "C´mon Champ! It´s warmup time.";
-    private EvaluateFire evaluateFire;
-    private MojoModel model;
-    private EasyPredictModelWrapper predictorModel;
 
+    /**
+     * referencia EvaluateFire para o gestor de envio dos dados para as tabelas de classificação
+     */
+    private EvaluateFire evaluateFire;
+
+    /**
+     * referencia MojoModel para o modelo utilizado
+     */
+    private MojoModel model;
+
+    /**
+     * referencia EasyPredictModelWrapper para o gestor de previsões do modelo
+     */
+    private EasyPredictModelWrapper predictorModel;
 
     @Override
     public void run() {
@@ -33,7 +47,6 @@ public class MARK2 extends AdvancedRobot {
         }
 
         predictorModel = new EasyPredictModelWrapper(model);
-
         evaluateFire = new EvaluateFire(NAME);
 
         while (true) {
@@ -75,9 +88,14 @@ public class MARK2 extends AdvancedRobot {
                     hitValue = i;
                 }
             }
-            if (label.equals(event.getName()) && hitValue == 1.0 && probability > 0.75) {
-                if (event.getDistance() < 200) fireBullet(3);
-                else if (event.getDistance() < 700) fireBullet(2);
+            if (event.getName().equals("sample.Walls") && event.getVelocity() == 0.0) {
+                if (getEnergy() > 40 && event.getDistance() < 200) fireBullet(3);
+                else if (getEnergy() > 20 && event.getDistance() < 700) fireBullet(2);
+                else fireBullet(1);
+            }
+            if (label.equals(event.getName()) && hitValue == 1.0 && probability > 0.7) {
+                if (getEnergy() > 40 && event.getDistance() < 200) fireBullet(3);
+                else if (getEnergy() > 20 && event.getDistance() < 700) fireBullet(2);
                 else fireBullet(1);
             }
         } catch (PredictException e) {
