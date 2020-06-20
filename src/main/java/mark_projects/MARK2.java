@@ -90,28 +90,24 @@ public class MARK2 extends AdvancedRobot {
     @Override
     public void onHitRobot(HitRobotEvent event) {
         super.onHitRobot(event);
-
         setBack(100);
     }
 
     @Override
     public void onHitWall(HitWallEvent event) {
         super.onHitWall(event);
-
         setBack(100);
     }
 
     @Override
     public void onBulletHit(BulletHitEvent event) {
         super.onBulletHit(event);
-
         evaluateFire.addHit(event);
     }
 
     @Override
     public void onBattleEnded(BattleEndedEvent event) {
         super.onBattleEnded(event);
-
-        System.out.println(evaluateFire.submit(event.getResults()));
+        evaluateFire.submit(event.getResults());
     }
 }
