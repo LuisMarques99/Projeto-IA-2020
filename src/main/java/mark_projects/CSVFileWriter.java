@@ -31,7 +31,7 @@ public class CSVFileWriter {
      * boolean reference to define if the file was already created or not
      */
     private boolean newFile = false;
-    
+
     /**
      * Creates an instance of a {@link CSVFileWriter CSV File Writer} with a filepath
      *

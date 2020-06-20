@@ -292,7 +292,7 @@ public class FieldRecognitionRobot extends AdvancedRobot {
      * @throws IOException
      */
     private void dataToCSV() throws IOException {
-        csvWriter = new CSVFileWriter("battleResults.csv", Data.getAttributes());
+        csvWriter = new CSVFileWriter("battle_results.csv", Data.getAttributes());
         csvWriter.writeAtOnce(dataList);
         csvWriter.close();
     }
